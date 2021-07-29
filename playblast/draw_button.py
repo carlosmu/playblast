@@ -11,7 +11,7 @@ def playblast_ui(self, context):
 ## REGISTER/UNREGISTER
 ##############################################
 def register():
-    bpy.types.VIEW3D_MT_editor_menus.prepend(playblast_ui) 
+    bpy.types.VIEW3D_MT_editor_menus.append(playblast_ui) 
         
 def unregister():
     bpy.types.VIEW3D_MT_editor_menus.remove(playblast_ui) 

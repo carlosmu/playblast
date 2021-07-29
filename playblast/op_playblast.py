@@ -1,9 +1,9 @@
 import bpy
 
-from .user_prefs import QL_Preferences
+from .user_prefs import PB_Prefs
 
 ### Register preferences for use in properties
-bpy.utils.register_class(QL_Preferences)
+# bpy.utils.register_class(QL_Preferences)
 
 
 ##############################################
@@ -27,10 +27,15 @@ class PL_OT_playblast(bpy.types.Operator):
     #   Playblast functionality
     ##############################################
     def execute(self, context): 
-        # ql_props = bpy.context.preferences.addons[__package__].preferences
-        pb_autoplay = context.preferences.addons[__package__].preferences.autoplay
+        # pb_autoplay = context.preferences.addons[__package__].preferences.pb_output
+        pb_format = context.preferences.addons[__package__].preferences.pb_format
+        pb_container = context.preferences.addons[__package__].preferences.pb_container
+        pb_audio = context.preferences.addons[__package__].preferences.pb_audio
+        pb_resolution = context.preferences.addons[__package__].preferences.pb_resolution
+        pb_stamp = context.preferences.addons[__package__].preferences.pb_stamp
+        pb_autoplay = context.preferences.addons[__package__].preferences.pb_autoplay
 
-        # Save render settings
+        # Save file render settings
         scene =  bpy.context.scene.name_full # Scene
         output = bpy.data.scenes[scene].render.filepath # Output path
         format = bpy.data.scenes[scene].render.image_settings.file_format # Output file format
@@ -44,8 +49,9 @@ class PL_OT_playblast(bpy.types.Operator):
         # bpy.data.scenes[scene].render.ffmpeg.format = 'MPEG4'
         bpy.data.scenes[scene].render.filepath = '//'
         bpy.data.scenes[scene].render.image_settings.file_format = pb_format
-        bpy.data.scenes[scene].render.ffmpeg.format = pb_container
-        bpy.data.scenes[scene].render.ffmpeg.audio_codec = pb_audio
+        if pb_format == 'FFMPEG':
+            bpy.data.scenes[scene].render.ffmpeg.format = pb_container
+            bpy.data.scenes[scene].render.ffmpeg.audio_codec = pb_audio
         bpy.data.scenes[scene].render.resolution_percentage = pb_resolution
         bpy.data.scenes[scene].render.use_stamp = pb_stamp
 
