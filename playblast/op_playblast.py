@@ -2,10 +2,6 @@ import bpy
 
 from .user_prefs import PB_Prefs
 
-### Register preferences for use in properties
-# bpy.utils.register_class(QL_Preferences)
-
-
 ##############################################
 #   MAIN OPERATOR
 ##############################################
@@ -45,8 +41,6 @@ class PL_OT_playblast(bpy.types.Operator):
         stamp = bpy.data.scenes[scene].render.use_stamp # Use Stamp
 
         # Overwrite file settings
-        # bpy.data.scenes[scene].render.image_settings.file_format = 'FFMPEG'
-        # bpy.data.scenes[scene].render.ffmpeg.format = 'MPEG4'
         bpy.data.scenes[scene].render.filepath = '//'
         bpy.data.scenes[scene].render.image_settings.file_format = pb_format
         if pb_format == 'FFMPEG':
@@ -69,9 +63,6 @@ class PL_OT_playblast(bpy.types.Operator):
         bpy.data.scenes[scene].render.use_stamp = stamp
 
         return{'FINISHED'}
-
-### Unregister Preferences for use in main functionality
-# bpy.utils.unregister_class(QL_Preferences)
 
 ##############################################
 ## Register/unregister classes and functions

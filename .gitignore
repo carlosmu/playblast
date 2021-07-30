@@ -1,0 +1,6 @@
+# Exclude pycache folder and extension
+/__pycache__/
+*.pyc
+
+# Exclude .zip tests
+*.zip
