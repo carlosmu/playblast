@@ -15,12 +15,12 @@ bl_info = {
     "name" : "Playblast",
     "author" : "carlosmu <carlos.damian.munoz@gmail.com>",    
     "blender" : (2, 83, 0),
-    "version" : (0, 4, 0),
+    "version" : (1, 0, 0),
     "category" : "Animation",
-    "location" : "3D View Main Menu",
+    "location" : "3D View Main Menu and/or Right Click Context Menu",
     "description" : "Improves viewport render animation user experience",
     "warning" : "",
-    "doc_url" : "",
+    "doc_url" : "https://blendermarket.com/products/playblast",
     "tracker_url" : "https://blendermarket.com/creators/carlosmu",
 }
 

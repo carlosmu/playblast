@@ -19,7 +19,6 @@ class PL_OT_playblast(bpy.types.Operator):
         if (context.area.ui_type == 'VIEW_3D'):
             return True 
 
-
     ##############################################
     #   Playblast functionality
     ##############################################
@@ -30,6 +29,7 @@ class PL_OT_playblast(bpy.types.Operator):
         pb_subfolder_name = context.preferences.addons[__package__].preferences.pb_subfolder_name
         pb_prefix_options = context.preferences.addons[__package__].preferences.pb_prefix_options
         pb_custom_prefix = context.preferences.addons[__package__].preferences.pb_custom_prefix
+        pb_separator = context.preferences.addons[__package__].preferences.pb_separator
         pb_format = context.preferences.addons[__package__].preferences.pb_format
         pb_container = context.preferences.addons[__package__].preferences.pb_container
         pb_audio = context.preferences.addons[__package__].preferences.pb_audio
@@ -46,21 +46,18 @@ class PL_OT_playblast(bpy.types.Operator):
         resolution = bpy.data.scenes[scene].render.resolution_percentage
         stamp = bpy.data.scenes[scene].render.use_stamp # Use Stamp
 
-            # ('FILE_NAME', 'File name', ''),
-            # ('CUSTOM_PREFIX', 'Custom prefix', ''),
-            # ('NONE', 'No prefix needed', '')],
-
         # Get filename
-        filename = bpy.path.basename(bpy.context.blend_data.filepath)
+        filename = ""
+        filename = bpy.path.basename(bpy.data.filepath)
         filename = os.path.splitext(filename)[0]
 
         # Define Prefix
         pb_prefix = ""
 
         if pb_prefix_options == 'FILE_NAME':
-            pb_prefix = filename + "-"
+            pb_prefix = filename + pb_separator
         elif pb_prefix_options == 'CUSTOM_PREFIX':
-            pb_prefix = pb_custom_prefix + "-"
+            pb_prefix = pb_custom_prefix + pb_separator
         else:
             pass
 
@@ -82,7 +79,7 @@ class PL_OT_playblast(bpy.types.Operator):
             if pb_subfolder:
                 pb_output = output + pb_subfolder_name
             else: 
-                pass
+                pb_output = output
 
         # Add prefix
         pb_output = pb_output + pb_prefix

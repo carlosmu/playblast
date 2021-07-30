@@ -11,8 +11,8 @@ class PB_Prefs(bpy.types.AddonPreferences):
 
     # Define properties
     pb_output_options : bpy.props.EnumProperty(
-        name = "Output Path Options",
-        description = "Select your preferred file output",        
+        name = "Output Path Folder",
+        description = "Select your preferred folder output",        
         items = [
             ('PROYECT_FOLDER', 'Project folder', ''),
             ('SYSTEM_FOLDER', 'System folder', ''),
@@ -26,12 +26,12 @@ class PB_Prefs(bpy.types.AddonPreferences):
         subtype = 'FILE_PATH',
     )
     pb_subfolder : bpy.props.BoolProperty(
-        name = "Subfolder",
+        name = "Subfolder Name",
         description = "User defined subfolder",
         default = True,
     )
     pb_subfolder_name : bpy.props.StringProperty(
-        name = "Subfolder Name",
+        name = "Subfolder Custom Name",
         description = "Set a subfolder Name",
         default = "Playblast",
     )
@@ -47,14 +47,19 @@ class PB_Prefs(bpy.types.AddonPreferences):
     pb_custom_prefix : bpy.props.StringProperty(
         name = "Custom prefix",
         description = "Set a custom prefix for video file",
-        default = "Playblast-",
+        default = "Playblast",
+    )
+    pb_separator : bpy.props.StringProperty(
+        name = "Prefix Separator",
+        description = "Set a custom prefix separator (use only system supported characters, for example underscore, middle dash, or dot",
+        default = "-",
     )
     pb_format : bpy.props.EnumProperty(
         name = "Format",
         description = "File format to save the playblast",        
         items = [
             ('AVI_JPEG', 'AVI JPEG', ''),
-            ('AVI_RAW', 'AVI JPEG', ''),
+            ('AVI_RAW', 'AVI RAW', ''),
             ('FFMPEG', 'FFmpeg Video', '')],
         default = "FFMPEG",
     )
@@ -67,11 +72,9 @@ class PB_Prefs(bpy.types.AddonPreferences):
             ('MPEG4', 'MPEG-4', ''),
             ('AVI', 'AVI', ''),
             ('QUICKTIME', 'Quicktime', ''),
-            ('DV', 'DV', ''),
             ('OGG', 'Ogg', ''),
             ('MKV', 'Matroska', ''),
-            ('FLASH', 'Flash', ''),
-            ('WEBM', 'WebM', '')],
+            ('FLASH', 'Flash', '')],
         default = "MPEG4",
     )
     pb_audio : bpy.props.EnumProperty(
@@ -81,24 +84,22 @@ class PB_Prefs(bpy.types.AddonPreferences):
             ('NONE', 'No Audio', ''),
             ('AAC', 'AAC', ''),
             ('AC3', 'AC3', ''),
-            ('FLAC', 'FLAC', ''),
             ('MP2', 'MP2', ''),
             ('MP3', 'MP3', ''),
             ('OPUS', 'OPUS', ''),
-            ('PCM', 'PCM', ''),
             ('VORBIS', 'VORBIS', '')],
-        default = "MP3",
+        default = "NONE",
     )
     pb_resolution : bpy.props.IntProperty(
         name = "Resolution %",
         description = "Percentage scale for render resolution",
         default = 50,
-        min = 1, soft_min = 1, soft_max = 100, max =200,
+        min = 1, soft_min = 10, soft_max = 100, max =200,
     )
     pb_stamp : bpy.props.BoolProperty(
         name = "Stamp Metadata",
         description = "Render the stamp info text in the rendered video",
-        default = True,
+        default = False,
     )
     pb_autoplay : bpy.props.BoolProperty(
         name = "Autoplay",
@@ -123,7 +124,9 @@ class PB_Prefs(bpy.types.AddonPreferences):
 
     
 
-
+    ##############################################
+    #    DRAW FUNCTION
+    ##############################################
     
     def draw(self, context):
         layout = self.layout
@@ -160,6 +163,9 @@ class PB_Prefs(bpy.types.AddonPreferences):
         if pb_prefix_options == 'CUSTOM_PREFIX':
             row.prop(self, "pb_custom_prefix", text = "")
 
+        if pb_prefix_options != 'NONE':
+            layout.prop(self, "pb_separator")
+        
         # Set format
         layout.prop(self, "pb_format")
         
