@@ -119,7 +119,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
     pb_icon_only : bpy.props.BoolProperty(
         name = "Icon Only",
         description = 'Hide the word "Playblast" on Main Menu Button',
-        default = False,
+        default = True,
     )
 
     

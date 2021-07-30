@@ -7,6 +7,9 @@ from .user_prefs import PB_Prefs
 #   MAIN OPERATOR
 ##############################################
 
+def warning(self, context):
+    self.layout.label(text="Please save your blend file")
+
 class PL_OT_playblast(bpy.types.Operator):
     """Improves viewport render animation user experience"""
     bl_idname = "pl.playblast"
@@ -23,6 +26,15 @@ class PL_OT_playblast(bpy.types.Operator):
     #   Playblast functionality
     ##############################################
     def execute(self, context): 
+
+        if bpy.data.is_saved:       
+            self.playblast(context)
+        else:
+            context.window_manager.popup_menu(warning, title="File is not saved", icon='ERROR')
+
+        return{'FINISHED'}
+
+    def playblast(self, context):
         pb_output_options = context.preferences.addons[__package__].preferences.pb_output_options
         pb_system_folder = context.preferences.addons[__package__].preferences.pb_system_folder
         pb_subfolder = context.preferences.addons[__package__].preferences.pb_subfolder
@@ -106,8 +118,6 @@ class PL_OT_playblast(bpy.types.Operator):
         bpy.data.scenes[scene].render.ffmpeg.audio_codec = audio
         bpy.data.scenes[scene].render.resolution_percentage = resolution
         bpy.data.scenes[scene].render.use_stamp = stamp
-
-        return{'FINISHED'}
 
 ##############################################
 ## Register/unregister classes and functions
