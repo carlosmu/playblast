@@ -25,7 +25,10 @@ class PL_OT_playblast(bpy.types.Operator):
     def execute(self, context): 
         pb_output_options = context.preferences.addons[__package__].preferences.pb_output_options
         # pb_custom_output = context.preferences.addons[__package__].preferences.pb_custom_output
-        pb_output = context.preferences.addons[__package__].preferences.pb_output
+        pb_system_folder = context.preferences.addons[__package__].preferences.pb_system_folder
+        pb_subfolder = context.preferences.addons[__package__].preferences.pb_subfolder
+        pb_subfolder_name = context.preferences.addons[__package__].preferences.pb_subfolder_name
+        pb_prefix = context.preferences.addons[__package__].preferences.pb_prefix
         pb_format = context.preferences.addons[__package__].preferences.pb_format
         pb_container = context.preferences.addons[__package__].preferences.pb_container
         pb_audio = context.preferences.addons[__package__].preferences.pb_audio
@@ -42,13 +45,32 @@ class PL_OT_playblast(bpy.types.Operator):
         resolution = bpy.data.scenes[scene].render.resolution_percentage
         stamp = bpy.data.scenes[scene].render.use_stamp # Use Stamp
 
-        # Overwrite file settings
+        # Define Output Path
+        pb_output = ""
+        pb_subfolder_name = pb_subfolder_name + "/"
+
         if pb_output_options == 'PROYECT_FOLDER':
-            bpy.data.scenes[scene].render.filepath = '//'
+            if pb_subfolder:
+                pb_output = "//" + pb_subfolder_name
+            else:
+                pb_output = "//"
         elif pb_output_options == 'SYSTEM_FOLDER':
-            bpy.data.scenes[scene].render.filepath = pb_output
+            if pb_subfolder:
+                pb_output = pb_system_folder + pb_subfolder_name
+            else:
+                pb_output = pb_system_folder
         else:
-            pass
+            if pb_subfolder:
+                pb_output = output + pb_subfolder_name
+            else: 
+                pass
+            
+        # Add prefix
+        pb_output = pb_output + pb_prefix
+
+        # Overwrite file settings
+        bpy.data.scenes[scene].render.filepath = pb_output
+
         bpy.data.scenes[scene].render.image_settings.file_format = pb_format
         if pb_format == 'FFMPEG':
             bpy.data.scenes[scene].render.ffmpeg.format = pb_container

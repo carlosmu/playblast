@@ -9,6 +9,7 @@ from bpy.props import StringProperty, IntProperty, FloatProperty, BoolProperty, 
 class PB_Prefs(bpy.types.AddonPreferences):
     bl_idname = __package__
 
+    # Define properties
     pb_output_options : bpy.props.EnumProperty(
         name = "Output Path Options",
         description = "Select your preferred file output",        
@@ -18,16 +19,26 @@ class PB_Prefs(bpy.types.AddonPreferences):
             ('PROYECT_RENDER_SETTINGS', 'Mantain file render settings', '')],
         default = "PROYECT_FOLDER",
     )
-    pb_custom_output : bpy.props.BoolProperty(
-        name = "Custom Output",
-        description = "User defined custom output",
-        default = True,
-    )
-    pb_output : bpy.props.StringProperty(
-        name = "Output",
-        description = "Output path for playblast files",
+    pb_system_folder : bpy.props.StringProperty(
+        name = "System folder",
+        description = "System output path for playblast files",
         default = "//Playblast/",
         subtype = 'FILE_PATH',
+    )
+    pb_subfolder : bpy.props.BoolProperty(
+        name = "Subfolder",
+        description = "User defined subfolder",
+        default = True,
+    )
+    pb_subfolder_name : bpy.props.StringProperty(
+        name = "Name",
+        description = "Set a subfolder Name",
+        default = "Playblast",
+    )
+    pb_prefix : bpy.props.StringProperty(
+        name = "Prefix for video name",
+        description = "Set a prefix for video file",
+        default = "Playblast-",
     )
     pb_format : bpy.props.EnumProperty(
         name = "Format",
@@ -111,25 +122,46 @@ class PB_Prefs(bpy.types.AddonPreferences):
         layout.use_property_decorate = True
         layout.scale_y = 1.2
 
-        pb_custom_output = context.preferences.addons[__package__].preferences.pb_custom_output
+        pb_subfolder = context.preferences.addons[__package__].preferences.pb_subfolder
         pb_format = context.preferences.addons[__package__].preferences.pb_format
         pb_enable_3dview_menu = context.preferences.addons[__package__].preferences.pb_enable_3dview_menu
+        pb_output_options = context.preferences.addons[__package__].preferences.pb_output_options
 
+        # Output options
         layout.prop(self, "pb_output_options")
-        layout.prop(self, "pb_custom_output")
-        if pb_custom_output:
-             layout.prop(self, "pb_output")
+        
+        # If options is system folder, choose path
+        if pb_output_options == 'SYSTEM_FOLDER' :
+            layout.prop(self, "pb_system_folder")  
+        
+        row = layout.row()
+        row.prop(self, "pb_subfolder")
+        # If subfolder is true, set subfolder name
+        if pb_subfolder:
+             row.prop(self, "pb_subfolder_name")
+        
+        # Set prefix
+        layout.prop(self, "pb_prefix")
+
+        # Set format
         layout.prop(self, "pb_format")
+        
+        # If format is FFMPEG, set container and audio
         if pb_format == 'FFMPEG':
             layout.prop(self, "pb_container")
             layout.prop(self, "pb_audio")
+
+        # Set resolution
         layout.prop(self, "pb_resolution")
+
+        # Enable Stamp
         layout.prop(self, "pb_stamp")
+
+        # Enable Autoplay
         layout.prop(self, "pb_autoplay")
 
-        row = layout.row()
-        row.label(text="")
-        row.label(text="Enable UI Buttons on:")
+        # Enable Buttons
+        layout.label(text="Enable UI Buttons on:")
         layout.prop(self, "pb_enable_context_menu")
         row = layout.row()
         row.prop(self, "pb_enable_3dview_menu")
