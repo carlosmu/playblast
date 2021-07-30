@@ -23,7 +23,8 @@ class PL_OT_playblast(bpy.types.Operator):
     #   Playblast functionality
     ##############################################
     def execute(self, context): 
-        # pb_autoplay = context.preferences.addons[__package__].preferences.pb_output
+        pb_custom_output = context.preferences.addons[__package__].preferences.pb_custom_output
+        pb_output = context.preferences.addons[__package__].preferences.pb_output
         pb_format = context.preferences.addons[__package__].preferences.pb_format
         pb_container = context.preferences.addons[__package__].preferences.pb_container
         pb_audio = context.preferences.addons[__package__].preferences.pb_audio
@@ -41,7 +42,8 @@ class PL_OT_playblast(bpy.types.Operator):
         stamp = bpy.data.scenes[scene].render.use_stamp # Use Stamp
 
         # Overwrite file settings
-        bpy.data.scenes[scene].render.filepath = '//'
+        if pb_custom_output:
+            bpy.data.scenes[scene].render.filepath = pb_output
         bpy.data.scenes[scene].render.image_settings.file_format = pb_format
         if pb_format == 'FFMPEG':
             bpy.data.scenes[scene].render.ffmpeg.format = pb_container

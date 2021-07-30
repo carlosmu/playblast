@@ -9,6 +9,17 @@ from bpy.props import StringProperty, IntProperty, FloatProperty, BoolProperty, 
 class PB_Prefs(bpy.types.AddonPreferences):
     bl_idname = __package__
 
+    pb_custom_output : bpy.props.BoolProperty(
+        name = "Custom Output",
+        description = "User defined custom output",
+        default = True,
+    )
+    pb_output : bpy.props.StringProperty(
+        name = "Output",
+        description = "Output path for playblast files",
+        default = "//Playblast/",
+        subtype = 'FILE_PATH',
+    )
     pb_format : bpy.props.EnumProperty(
         name = "Format",
         description = "File format to save the playblast",        
@@ -80,6 +91,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
         description = 'Hide the word "Playblast" on Main Menu Button',
         default = False,
     )
+
     
 
 
@@ -90,9 +102,14 @@ class PB_Prefs(bpy.types.AddonPreferences):
         layout.use_property_decorate = True
         layout.scale_y = 1.2
 
+        pb_custom_output = context.preferences.addons[__package__].preferences.pb_custom_output
         pb_format = context.preferences.addons[__package__].preferences.pb_format
         pb_enable_3dview_menu = context.preferences.addons[__package__].preferences.pb_enable_3dview_menu
 
+        row = layout.row()
+        layout.prop(self, "pb_custom_output")
+        if pb_custom_output:
+             layout.prop(self, "pb_output")
         layout.prop(self, "pb_format")
         if pb_format == 'FFMPEG':
             layout.prop(self, "pb_container")
@@ -100,16 +117,16 @@ class PB_Prefs(bpy.types.AddonPreferences):
         layout.prop(self, "pb_resolution")
         layout.prop(self, "pb_stamp")
         layout.prop(self, "pb_autoplay")
-        
-        layout.label(text = "Enable UI Buttons:")
+
+        row = layout.row()
+        row.label(text="")
+        row.label(text="Enable UI Buttons on:")
+        layout.prop(self, "pb_enable_context_menu")
         row = layout.row()
         row.prop(self, "pb_enable_3dview_menu")
         if pb_enable_3dview_menu:
             row.prop(self, "pb_icon_only")
-        layout.prop(self, "pb_enable_context_menu")
         layout.separator()
-
-
 
 
 ####################################
