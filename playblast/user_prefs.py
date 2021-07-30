@@ -31,13 +31,22 @@ class PB_Prefs(bpy.types.AddonPreferences):
         default = True,
     )
     pb_subfolder_name : bpy.props.StringProperty(
-        name = "Name",
+        name = "Subfolder Name",
         description = "Set a subfolder Name",
         default = "Playblast",
     )
-    pb_prefix : bpy.props.StringProperty(
-        name = "Prefix for video name",
-        description = "Set a prefix for video file",
+    pb_prefix_options : bpy.props.EnumProperty(
+        name = "Prefix Options",
+        description = "Set a prefix for video name",        
+        items = [
+            ('FILE_NAME', 'File name', ''),
+            ('CUSTOM_PREFIX', 'Custom prefix', ''),
+            ('NONE', 'No prefix needed', '')],
+        default = "FILE_NAME",
+    )
+    pb_custom_prefix : bpy.props.StringProperty(
+        name = "Custom prefix",
+        description = "Set a custom prefix for video file",
         default = "Playblast-",
     )
     pb_format : bpy.props.EnumProperty(
@@ -126,6 +135,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
         pb_format = context.preferences.addons[__package__].preferences.pb_format
         pb_enable_3dview_menu = context.preferences.addons[__package__].preferences.pb_enable_3dview_menu
         pb_output_options = context.preferences.addons[__package__].preferences.pb_output_options
+        pb_prefix_options = context.preferences.addons[__package__].preferences.pb_prefix_options
 
         # Output options
         layout.prop(self, "pb_output_options")
@@ -133,15 +143,22 @@ class PB_Prefs(bpy.types.AddonPreferences):
         # If options is system folder, choose path
         if pb_output_options == 'SYSTEM_FOLDER' :
             layout.prop(self, "pb_system_folder")  
+            
         
         row = layout.row()
-        row.prop(self, "pb_subfolder")
-        # If subfolder is true, set subfolder name
+        row.prop(self, "pb_subfolder")        
+        # If subfolder is disable, disable label edition
         if pb_subfolder:
-             row.prop(self, "pb_subfolder_name")
+            row.prop(self, "pb_subfolder_name", text = "")
+        else:
+            row.prop(self, "pb_subfolder_name", text = "")
+            row.enabled = False
         
         # Set prefix
-        layout.prop(self, "pb_prefix")
+        row = layout.row()
+        row.prop(self, "pb_prefix_options")
+        if pb_prefix_options == 'CUSTOM_PREFIX':
+            row.prop(self, "pb_custom_prefix", text = "")
 
         # Set format
         layout.prop(self, "pb_format")

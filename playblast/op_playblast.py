@@ -1,4 +1,5 @@
 import bpy
+import os
 
 from .user_prefs import PB_Prefs
 
@@ -24,11 +25,11 @@ class PL_OT_playblast(bpy.types.Operator):
     ##############################################
     def execute(self, context): 
         pb_output_options = context.preferences.addons[__package__].preferences.pb_output_options
-        # pb_custom_output = context.preferences.addons[__package__].preferences.pb_custom_output
         pb_system_folder = context.preferences.addons[__package__].preferences.pb_system_folder
         pb_subfolder = context.preferences.addons[__package__].preferences.pb_subfolder
         pb_subfolder_name = context.preferences.addons[__package__].preferences.pb_subfolder_name
-        pb_prefix = context.preferences.addons[__package__].preferences.pb_prefix
+        pb_prefix_options = context.preferences.addons[__package__].preferences.pb_prefix_options
+        pb_custom_prefix = context.preferences.addons[__package__].preferences.pb_custom_prefix
         pb_format = context.preferences.addons[__package__].preferences.pb_format
         pb_container = context.preferences.addons[__package__].preferences.pb_container
         pb_audio = context.preferences.addons[__package__].preferences.pb_audio
@@ -44,6 +45,24 @@ class PL_OT_playblast(bpy.types.Operator):
         audio = bpy.data.scenes[scene].render.ffmpeg.audio_codec
         resolution = bpy.data.scenes[scene].render.resolution_percentage
         stamp = bpy.data.scenes[scene].render.use_stamp # Use Stamp
+
+            # ('FILE_NAME', 'File name', ''),
+            # ('CUSTOM_PREFIX', 'Custom prefix', ''),
+            # ('NONE', 'No prefix needed', '')],
+
+        # Get filename
+        filename = bpy.path.basename(bpy.context.blend_data.filepath)
+        filename = os.path.splitext(filename)[0]
+
+        # Define Prefix
+        pb_prefix = ""
+
+        if pb_prefix_options == 'FILE_NAME':
+            pb_prefix = filename + "-"
+        elif pb_prefix_options == 'CUSTOM_PREFIX':
+            pb_prefix = pb_custom_prefix + "-"
+        else:
+            pass
 
         # Define Output Path
         pb_output = ""
@@ -64,7 +83,7 @@ class PL_OT_playblast(bpy.types.Operator):
                 pb_output = output + pb_subfolder_name
             else: 
                 pass
-            
+
         # Add prefix
         pb_output = pb_output + pb_prefix
 
