@@ -9,6 +9,15 @@ from bpy.props import StringProperty, IntProperty, FloatProperty, BoolProperty, 
 class PB_Prefs(bpy.types.AddonPreferences):
     bl_idname = __package__
 
+    pb_output_options : bpy.props.EnumProperty(
+        name = "Output Path Options",
+        description = "Select your preferred file output",        
+        items = [
+            ('PROYECT_FOLDER', 'Project folder', ''),
+            ('SYSTEM_FOLDER', 'System folder', ''),
+            ('PROYECT_RENDER_SETTINGS', 'Mantain file render settings', '')],
+        default = "PROYECT_FOLDER",
+    )
     pb_custom_output : bpy.props.BoolProperty(
         name = "Custom Output",
         description = "User defined custom output",
@@ -106,7 +115,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
         pb_format = context.preferences.addons[__package__].preferences.pb_format
         pb_enable_3dview_menu = context.preferences.addons[__package__].preferences.pb_enable_3dview_menu
 
-        row = layout.row()
+        layout.prop(self, "pb_output_options")
         layout.prop(self, "pb_custom_output")
         if pb_custom_output:
              layout.prop(self, "pb_output")
