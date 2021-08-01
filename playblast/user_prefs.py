@@ -153,9 +153,6 @@ class PB_Prefs(bpy.types.AddonPreferences):
         # If subfolder is disable, disable label edition
         if pb_subfolder:
             row.prop(self, "pb_subfolder_name", text = "")
-        else:
-            row.prop(self, "pb_subfolder_name", text = "")
-            row.enabled = False
         
         # Set prefix
         row = layout.row()
