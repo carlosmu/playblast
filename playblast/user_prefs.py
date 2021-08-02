@@ -22,11 +22,11 @@ class PB_Prefs(bpy.types.AddonPreferences):
     pb_system_folder : bpy.props.StringProperty(
         name = "System folder",
         description = "System output path for playblast files",
-        default = "//Playblast/",
+        default = "//",
         subtype = 'FILE_PATH',
     )
     pb_subfolder : bpy.props.BoolProperty(
-        name = "Subfolder Name",
+        name = "Subfolder",
         description = "User defined subfolder",
         default = True,
     )
@@ -51,7 +51,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
     )
     pb_separator : bpy.props.StringProperty(
         name = "Prefix Separator",
-        description = "Set a custom prefix separator (use only system supported characters, for example underscore, middle dash, or dot",
+        description = "Set a custom prefix separator (use only system supported characters, for example underscore, middle dash, or dot)",
         default = "-",
     )
     pb_format : bpy.props.EnumProperty(
@@ -90,16 +90,37 @@ class PB_Prefs(bpy.types.AddonPreferences):
             ('VORBIS', 'VORBIS', '')],
         default = "NONE",
     )
-    pb_resolution : bpy.props.IntProperty(
+    pb_resolution : bpy.props.FloatProperty(
         name = "Resolution %",
         description = "Percentage scale for render resolution",
         default = 50,
-        min = 1, soft_min = 10, soft_max = 100, max =200,
+        min = 0, soft_min = 1, soft_max = 100, max =400,
+        subtype='PERCENTAGE',
+        precision = 0,
     )
     pb_stamp : bpy.props.BoolProperty(
         name = "Stamp Metadata",
         description = "Render the stamp info text in the rendered video",
         default = False,
+    )    
+    pb_overlays : bpy.props.BoolProperty(
+        name = "Hide All Overlays",
+        description = "Hide overlays in playblast",
+        default = True,
+    )
+    pb_overlays : bpy.props.EnumProperty(
+        name = "Overlays",
+        description = "Hide overlays",
+        items = [ 
+            ('ALL', 'Hide all overlays', ''),
+            ('BONES', 'Hide only bones', ''),
+            ('NONE', "Don't overwrite scene settings", '')],
+        default = "ALL",
+    )
+    pb_show_environment : bpy.props.BoolProperty(
+        name = "Show Environment",
+        description = "Disable the film transparent render setting",
+        default = True,
     )
     pb_autoplay : bpy.props.BoolProperty(
         name = "Autoplay",
@@ -120,9 +141,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
         name = "Icon Only",
         description = 'Hide the word "Playblast" on Main Menu Button',
         default = True,
-    )
-
-    
+    )    
 
     ##############################################
     #    DRAW FUNCTION
@@ -131,63 +150,76 @@ class PB_Prefs(bpy.types.AddonPreferences):
     def draw(self, context):
         layout = self.layout
         layout.use_property_split = True
-        layout.use_property_decorate = True
-        layout.scale_y = 1.2
 
-        pb_subfolder = context.preferences.addons[__package__].preferences.pb_subfolder
-        pb_format = context.preferences.addons[__package__].preferences.pb_format
-        pb_enable_3dview_menu = context.preferences.addons[__package__].preferences.pb_enable_3dview_menu
-        pb_output_options = context.preferences.addons[__package__].preferences.pb_output_options
-        pb_prefix_options = context.preferences.addons[__package__].preferences.pb_prefix_options
+        prefs = context.preferences.addons[__package__].preferences
 
-        # Output options
-        layout.prop(self, "pb_output_options")
-        
+        box = layout.box()
+
+        box.label(text="Output", icon = "FILE_FOLDER")
+
+        # Folder
+        box.prop(self, "pb_output_options", text = "Folder")       
+
         # If options is system folder, choose path
-        if pb_output_options == 'SYSTEM_FOLDER' :
-            layout.prop(self, "pb_system_folder")  
-            
+        if prefs.pb_output_options == 'SYSTEM_FOLDER' :
+            box.prop(self, "pb_system_folder")             
         
-        row = layout.row()
+        # Subfolder
+        row = box.row()
         row.prop(self, "pb_subfolder")        
         # If subfolder is disable, disable label edition
-        if pb_subfolder:
+        if prefs.pb_subfolder:
             row.prop(self, "pb_subfolder_name", text = "")
-        
+        box.separator() 
+
         # Set prefix
-        row = layout.row()
-        row.prop(self, "pb_prefix_options")
-        if pb_prefix_options == 'CUSTOM_PREFIX':
+        row = box.row()
+        row.prop(self, "pb_prefix_options", text = "Name Prefix")
+        if prefs.pb_prefix_options == 'CUSTOM_PREFIX':
             row.prop(self, "pb_custom_prefix", text = "")
 
-        if pb_prefix_options != 'NONE':
-            layout.prop(self, "pb_separator")
+        if prefs.pb_prefix_options != 'NONE':
+            row = box.row()
+            row.prop(self, "pb_separator", text = "Separator")
+            row.label(text="")
+        box.separator()
         
+        box.label(text="Video Settings", icon = "FILE_MOVIE")
         # Set format
-        layout.prop(self, "pb_format")
+        box.prop(self, "pb_format")
         
         # If format is FFMPEG, set container and audio
-        if pb_format == 'FFMPEG':
-            layout.prop(self, "pb_container")
-            layout.prop(self, "pb_audio")
+        if prefs.pb_format == 'FFMPEG':
+            box.prop(self, "pb_container")
+            box.prop(self, "pb_audio")
 
         # Set resolution
-        layout.prop(self, "pb_resolution")
+        box.prop(self, "pb_resolution")
+        box.separator()
 
+        row = box.row()
         # Enable Stamp
-        layout.prop(self, "pb_stamp")
+        row.prop(self, "pb_stamp")
+        # Show Environment
+        row.prop(self, "pb_show_environment")
+        row = box.row()
+        row.prop(self, "pb_overlays")
+        box.separator()
 
-        # Enable Autoplay
-        layout.prop(self, "pb_autoplay")
-
-        # Enable Buttons
-        layout.label(text="Enable UI Buttons on:")
-        layout.prop(self, "pb_enable_context_menu")
-        row = layout.row()
+        box.label(text="Show UI Buttons", icon = 'SHADERFX')
+        # Enable Button on Context
+        box.prop(self, "pb_enable_context_menu")
+        row = box.row()
+        # Enable Button on 3dview Menu
         row.prop(self, "pb_enable_3dview_menu")
-        if pb_enable_3dview_menu:
+        if prefs.pb_enable_3dview_menu:
             row.prop(self, "pb_icon_only")
-        layout.separator()
+        box.separator()
+
+        box.label(text="Behavior", icon = 'AUTO')
+        # Enable Autoplay
+        box.prop(self, "pb_autoplay")        
+        box.separator()
 
 
 ####################################
