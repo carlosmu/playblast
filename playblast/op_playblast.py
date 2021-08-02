@@ -10,6 +10,8 @@ from .user_prefs import PB_Prefs
 
 def warning(self, context):
     self.layout.label(text="Please save your .blend file first")
+def codecs_error(self, context):
+    self.layout.label(text="An error occurred with codecs, try again or choose another format, for example AVI-JPEG")
 
 class PL_OT_playblast(bpy.types.Operator):
     """Improves viewport render animation user experience"""
@@ -115,8 +117,11 @@ class PL_OT_playblast(bpy.types.Operator):
             bpy.context.space_data.overlay.show_bones = False
         else:
             pass
-
-        bpy.ops.render.opengl(animation=True)
+        
+        try:
+            bpy.ops.render.opengl(animation=True)
+        except:
+            context.window_manager.popup_menu(codecs_error, title="Codecs error", icon='ERROR')
 
         if prefs.pb_autoplay:
             bpy.ops.render.play_rendered_anim()
