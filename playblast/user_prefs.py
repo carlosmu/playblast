@@ -16,7 +16,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
         items = [
             ('PROYECT_FOLDER', 'Project folder', ''),
             ('SYSTEM_FOLDER', 'System folder', ''),
-            ('PROYECT_RENDER_SETTINGS', 'Mantain file render settings', '')],
+            ('PROYECT_RENDER_SETTINGS', "Don't overwrite file output", '')],
         default = "PROYECT_FOLDER",
     )
     pb_system_folder : bpy.props.StringProperty(
@@ -60,8 +60,8 @@ class PB_Prefs(bpy.types.AddonPreferences):
         items = [
             ('AVI_JPEG', 'AVI JPEG', ''),
             ('AVI_RAW', 'AVI RAW', ''),
-            ('FFMPEG', 'FFmpeg Video', '')],
-        default = "FFMPEG",
+            ('FFMPEG', 'FFmpeg Video (Unstable)', '')],
+        default = "AVI_JPEG",
     )
     pb_container : bpy.props.EnumProperty(
         name = "Container",
@@ -93,7 +93,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
     pb_resolution : bpy.props.FloatProperty(
         name = "Resolution %",
         description = "Percentage scale for render resolution",
-        default = 50,
+        default = 100,
         min = 0, soft_min = 1, soft_max = 100, max =400,
         subtype='PERCENTAGE',
         precision = 0,
