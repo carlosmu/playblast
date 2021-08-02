@@ -118,28 +118,28 @@ class PL_OT_playblast(bpy.types.Operator):
         else:
             pass
         
+        # Try to create the video, but mainly protect the user's data
         try:
             bpy.ops.render.opengl(animation=True)
+            if prefs.pb_autoplay:
+                bpy.ops.render.play_rendered_anim()        
         except:
-            context.window_manager.popup_menu(codecs_error, title="Codecs error", icon='ERROR')
-
-        if prefs.pb_autoplay:
-            bpy.ops.render.play_rendered_anim()
-
-        #################################
-        # Recover previous file settings
-        #################################
-        bpy.data.scenes[file_scene].render.filepath = file_output
-        bpy.data.scenes[file_scene].render.image_settings.file_format = file_format
-        if file_format == 'FFMPEG':
-            bpy.data.scenes[file_scene].render.ffmpeg.format = file_container
-            bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = file_audio
-        bpy.data.scenes[file_scene].render.resolution_percentage = file_resolution
-        bpy.data.scenes[file_scene].render.use_stamp = file_stamp
-        bpy.data.scenes[file_scene].render.stamp_font_size = file_stamp_font_size
-        bpy.data.scenes[file_scene].render.film_transparent = file_transparent
-        bpy.context.space_data.overlay.show_overlays = file_overlays
-        bpy.context.space_data.overlay.show_bones = file_bone_overlays
+            context.window_manager.popup_menu(codecs_error, title="Codecs error", icon='ERROR')    
+        finally:
+            #################################
+            # Recover previous file settings
+            #################################
+            bpy.data.scenes[file_scene].render.filepath = file_output
+            bpy.data.scenes[file_scene].render.image_settings.file_format = file_format
+            if file_format == 'FFMPEG':
+                bpy.data.scenes[file_scene].render.ffmpeg.format = file_container
+                bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = file_audio
+            bpy.data.scenes[file_scene].render.resolution_percentage = file_resolution
+            bpy.data.scenes[file_scene].render.use_stamp = file_stamp
+            bpy.data.scenes[file_scene].render.stamp_font_size = file_stamp_font_size
+            bpy.data.scenes[file_scene].render.film_transparent = file_transparent
+            bpy.context.space_data.overlay.show_overlays = file_overlays
+            bpy.context.space_data.overlay.show_bones = file_bone_overlays
 
 ##############################################
 ## Register/unregister classes and functions
