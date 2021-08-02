@@ -5,12 +5,11 @@ import bpy
 ##############################################
 def playblast_ui_main_menu(self, context):
 
-    pb_enable_3dview_menu = context.preferences.addons[__package__].preferences.pb_enable_3dview_menu
-    pb_icon_only = context.preferences.addons[__package__].preferences.pb_icon_only
+    prefs = context.preferences.addons[__package__].preferences
 
     layout = self.layout 
-    if pb_enable_3dview_menu: 
-        if pb_icon_only:    
+    if prefs.pb_enable_3dview_menu: 
+        if prefs.pb_icon_only:    
             layout.operator("pl.playblast", icon='FILE_MOVIE', text = '') 
         else:
             layout.operator("pl.playblast", icon='FILE_MOVIE') 
@@ -21,10 +20,10 @@ def playblast_ui_main_menu(self, context):
 ##############################################
 def playblast_ui_context_menu(self, context):
 
-    pb_enable_context_menu = context.preferences.addons[__package__].preferences.pb_enable_context_menu
+    prefs = context.preferences.addons[__package__].preferences
 
     layout = self.layout 
-    if pb_enable_context_menu:     
+    if prefs.pb_enable_context_menu:     
         layout.operator("pl.playblast", icon='FILE_MOVIE') 
 
 

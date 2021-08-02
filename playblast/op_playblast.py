@@ -1,7 +1,6 @@
 import bpy
 import os
 
-from .user_prefs import PB_Prefs
 # All pb_ variables come from user prefs, don't overwrite them
 
 ##############################################
@@ -38,7 +37,7 @@ class PL_OT_playblast(bpy.types.Operator):
         return{'FINISHED'}
 
     def playblast(self, context):
-        # To use User Preferences settings
+        
         prefs = context.preferences.addons[__package__].preferences
 
         #################################

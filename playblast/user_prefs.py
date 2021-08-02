@@ -60,7 +60,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
         items = [
             ('AVI_JPEG', 'AVI JPEG', ''),
             ('AVI_RAW', 'AVI RAW', ''),
-            ('FFMPEG', 'FFmpeg Video (Unstable)', '')],
+            ('FFMPEG', 'FFmpeg Video', '')],
         default = "AVI_JPEG",
     )
     pb_container : bpy.props.EnumProperty(
@@ -91,7 +91,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
         default = "NONE",
     )
     pb_resolution : bpy.props.FloatProperty(
-        name = "Resolution %",
+        name = "Resolution Percentage",
         description = "Percentage scale for render resolution",
         default = 100,
         min = 0, soft_min = 1, soft_max = 100, max =400,
@@ -107,11 +107,6 @@ class PB_Prefs(bpy.types.AddonPreferences):
         name = "Stamp Font Size",
         description="Size of the font used when rendering stamp text",
         default = 18,
-    ) 
-    pb_overlays : bpy.props.BoolProperty(
-        name = "Hide All Overlays",
-        description = "Hide overlays in playblast",
-        default = True,
     )
     pb_overlays : bpy.props.EnumProperty(
         name = "Overlays",
