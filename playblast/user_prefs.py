@@ -102,7 +102,12 @@ class PB_Prefs(bpy.types.AddonPreferences):
         name = "Stamp Metadata",
         description = "Render the stamp info text in the rendered video",
         default = False,
-    )    
+    )   
+    pb_stamp_font_size : bpy.props.IntProperty(
+        name = "Stamp Font Size",
+        description="Size of the font used when rendering stamp text",
+        default = 18,
+    ) 
     pb_overlays : bpy.props.BoolProperty(
         name = "Hide All Overlays",
         description = "Hide overlays in playblast",
@@ -142,7 +147,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
         description = 'Hide the word "Playblast" on Main Menu Button',
         default = True,
     )    
-
+    
     ##############################################
     #    DRAW FUNCTION
     ##############################################
@@ -200,8 +205,10 @@ class PB_Prefs(bpy.types.AddonPreferences):
         row = box.row()
         # Enable Stamp
         row.prop(self, "pb_stamp")
+        if prefs.pb_stamp:
+            row.prop(self, "pb_stamp_font_size", text="Font Size")
         # Show Environment
-        row.prop(self, "pb_show_environment")
+        box.prop(self, "pb_show_environment")
         row = box.row()
         row.prop(self, "pb_overlays")
         box.separator()

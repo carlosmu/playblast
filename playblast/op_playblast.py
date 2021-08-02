@@ -50,6 +50,7 @@ class PL_OT_playblast(bpy.types.Operator):
             file_audio = bpy.data.scenes[file_scene].render.ffmpeg.audio_codec
         file_resolution = bpy.data.scenes[file_scene].render.resolution_percentage
         file_stamp = bpy.data.scenes[file_scene].render.use_stamp # Use Stamp
+        file_stamp_font_size = bpy.data.scenes[file_scene].render.stamp_font_size
         file_transparent = bpy.data.scenes[file_scene].render.film_transparent # Film Transparent
         file_overlays = bpy.context.space_data.overlay.show_overlays # Overlays
         file_bone_overlays = bpy.context.space_data.overlay.show_bones # Bone overlays
@@ -103,6 +104,8 @@ class PL_OT_playblast(bpy.types.Operator):
             bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = prefs.pb_audio
         bpy.data.scenes[file_scene].render.resolution_percentage = prefs.pb_resolution
         bpy.data.scenes[file_scene].render.use_stamp = prefs.pb_stamp
+        if prefs.pb_stamp:
+            bpy.data.scenes[file_scene].render.stamp_font_size = prefs.pb_stamp_font_size
         if prefs.pb_show_environment:
             bpy.data.scenes[file_scene].render.film_transparent = False
         # Overlays
@@ -128,6 +131,7 @@ class PL_OT_playblast(bpy.types.Operator):
             bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = file_audio
         bpy.data.scenes[file_scene].render.resolution_percentage = file_resolution
         bpy.data.scenes[file_scene].render.use_stamp = file_stamp
+        bpy.data.scenes[file_scene].render.stamp_font_size = file_stamp_font_size
         bpy.data.scenes[file_scene].render.film_transparent = file_transparent
         bpy.context.space_data.overlay.show_overlays = file_overlays
         bpy.context.space_data.overlay.show_bones = file_bone_overlays
