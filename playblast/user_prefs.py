@@ -75,7 +75,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
             ('OGG', 'Ogg', ''),
             ('MKV', 'Matroska', ''),
             ('FLASH', 'Flash', '')],
-        default = "MPEG4",
+        default = "MKV",
     )
     pb_audio : bpy.props.EnumProperty(
         name = "Audio",

@@ -11,6 +11,8 @@ def warning(self, context):
     self.layout.label(text="Please save your .blend file first")
 def codecs_error(self, context):
     self.layout.label(text="An error occurred with codecs, try again or choose another format, for example AVI-JPEG")
+def videoplayer_error(self, context):
+    self.layout.label(text="An error occurred with videoplayer, check your aplication videoplayer preferences")
 
 class PL_OT_playblast(bpy.types.Operator):
     """Improves viewport render animation user experience"""
@@ -121,7 +123,9 @@ class PL_OT_playblast(bpy.types.Operator):
         try:
             bpy.ops.render.opengl(animation=True)
             if prefs.pb_autoplay:
-                bpy.ops.render.play_rendered_anim()        
+                try:
+                    bpy.ops.render.play_rendered_anim() 
+                except: context.window_manager.popup_menu(videoplayer_error, title="Video player error", icon='ERROR')     
         except:
             context.window_manager.popup_menu(codecs_error, title="Codecs error", icon='ERROR')    
         finally:
