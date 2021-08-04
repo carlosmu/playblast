@@ -2,5 +2,6 @@
 *.pyc
 **/BL_proxy/
 
-# Exclude .zip tests
 *.zip
+*.PNG~
+*.png~

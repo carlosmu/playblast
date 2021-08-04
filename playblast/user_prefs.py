@@ -71,27 +71,23 @@ class PB_Prefs(bpy.types.AddonPreferences):
             ('AVI', 'AVI', ''),
             ('QUICKTIME', 'Quicktime', ''),
             ('MKV', 'Matroska', '')],
-        default = "MKV",
+        default = "MPEG4",
     )
     pb_video_codec : bpy.props.EnumProperty(
         name = "Video Codec",
-        description = "Playblast file container",        
+        description = "Video codec",        
         items = [
             ('H264', 'H264', ''),
-            ('MPEG4', 'MPEG-4 (divx)', ''),
-            ('FFV1', 'FFmpeg video codec #1', ''),
             ('QTRLE', 'QT rle / QT Animation', '')],
         default = "H264",
     )
     pb_audio : bpy.props.EnumProperty(
         name = "Audio Codec",
-        description = "Audio codec to use",
+        description = "Audio codec",
         items = [ 
             ('NONE', 'No Audio', ''),
             ('AAC', 'AAC', ''),
-            ('AC3', 'AC3', ''),
-            ('MP3', 'MP3', ''),
-            ('OPUS', 'OPUS', '')],
+            ('MP3', 'MP3', '')],
         default = "NONE",
     )
     pb_resolution : bpy.props.FloatProperty(
