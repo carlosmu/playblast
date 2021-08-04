@@ -1,6 +1,6 @@
 /__pycache__/
 *.pyc
-/BL_proxy/
+**/BL_proxy/
 
 # Exclude .zip tests
 *.zip
