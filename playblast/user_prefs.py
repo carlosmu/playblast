@@ -61,7 +61,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
             ('AVI_JPEG', 'AVI JPEG', ''),
             ('AVI_RAW', 'AVI RAW', ''),
             ('FFMPEG', 'FFmpeg Video', '')],
-        default = "AVI_JPEG",
+        default = "FFMPEG",
     )
     pb_container : bpy.props.EnumProperty(
         name = "Container",
@@ -70,7 +70,6 @@ class PB_Prefs(bpy.types.AddonPreferences):
             ('MPEG4', 'MPEG-4', ''),
             ('AVI', 'AVI', ''),
             ('QUICKTIME', 'Quicktime', ''),
-            ('OGG', 'Ogg', ''),
             ('MKV', 'Matroska', '')],
         default = "MKV",
     )
@@ -81,8 +80,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
             ('H264', 'H264', ''),
             ('MPEG4', 'MPEG-4 (divx)', ''),
             ('FFV1', 'FFmpeg video codec #1', ''),
-            ('QTRLE', 'QT rle / QT Animation', ''),
-            ('THEORA', 'Theora', '')],
+            ('QTRLE', 'QT rle / QT Animation', '')],
         default = "H264",
     )
     pb_audio : bpy.props.EnumProperty(
@@ -93,8 +91,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
             ('AAC', 'AAC', ''),
             ('AC3', 'AC3', ''),
             ('MP3', 'MP3', ''),
-            ('OPUS', 'OPUS', ''),
-            ('VORBIS', 'VORBIS', '')],
+            ('OPUS', 'OPUS', '')],
         default = "NONE",
     )
     pb_resolution : bpy.props.FloatProperty(
