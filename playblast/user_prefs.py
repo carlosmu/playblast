@@ -55,7 +55,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
         default = "-",
     )
     pb_format : bpy.props.EnumProperty(
-        name = "Format",
+        name = "File Format",
         description = "File format to save the playblast",        
         items = [
             ('AVI_JPEG', 'AVI JPEG', ''),
@@ -67,24 +67,31 @@ class PB_Prefs(bpy.types.AddonPreferences):
         name = "Container",
         description = "Playblast file container",        
         items = [
-            ('MPEG1', 'MPEG-1', ''),
-            ('MPEG2', 'MPEG-2', ''),
             ('MPEG4', 'MPEG-4', ''),
             ('AVI', 'AVI', ''),
             ('QUICKTIME', 'Quicktime', ''),
             ('OGG', 'Ogg', ''),
-            ('MKV', 'Matroska', ''),
-            ('FLASH', 'Flash', '')],
+            ('MKV', 'Matroska', '')],
         default = "MKV",
     )
+    pb_video_codec : bpy.props.EnumProperty(
+        name = "Video Codec",
+        description = "Playblast file container",        
+        items = [
+            ('H264', 'H264', ''),
+            ('MPEG4', 'MPEG-4 (divx)', ''),
+            ('FFV1', 'FFmpeg video codec #1', ''),
+            ('QTRLE', 'QT rle / QT Animation', ''),
+            ('THEORA', 'Theora', '')],
+        default = "H264",
+    )
     pb_audio : bpy.props.EnumProperty(
-        name = "Audio",
+        name = "Audio Codec",
         description = "Audio codec to use",
         items = [ 
             ('NONE', 'No Audio', ''),
             ('AAC', 'AAC', ''),
             ('AC3', 'AC3', ''),
-            ('MP2', 'MP2', ''),
             ('MP3', 'MP3', ''),
             ('OPUS', 'OPUS', ''),
             ('VORBIS', 'VORBIS', '')],
@@ -93,7 +100,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
     pb_resolution : bpy.props.FloatProperty(
         name = "Resolution Percentage",
         description = "Percentage scale for render resolution",
-        default = 100,
+        default = 50,
         min = 0, soft_min = 1, soft_max = 100, max =400,
         subtype='PERCENTAGE',
         precision = 0,
@@ -106,7 +113,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
     pb_stamp_font_size : bpy.props.IntProperty(
         name = "Stamp Font Size",
         description="Size of the font used when rendering stamp text",
-        default = 18,
+        default = 12,
     )
     pb_overlays : bpy.props.EnumProperty(
         name = "Overlays",
@@ -186,12 +193,13 @@ class PB_Prefs(bpy.types.AddonPreferences):
         
         box.label(text="Video Settings", icon = "FILE_MOVIE")
         # Set format
-        box.prop(self, "pb_format")
-        
+        box.prop(self, "pb_format")        
         # If format is FFMPEG, set container and audio
         if prefs.pb_format == 'FFMPEG':
             box.prop(self, "pb_container")
+            box.prop(self, "pb_video_codec")
             box.prop(self, "pb_audio")
+        box.separator()
 
         # Set resolution
         box.prop(self, "pb_resolution")

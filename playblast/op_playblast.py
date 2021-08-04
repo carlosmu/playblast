@@ -10,7 +10,7 @@ import os
 def warning(self, context):
     self.layout.label(text="Please save your .blend file first")
 def codecs_error(self, context):
-    self.layout.label(text="An error occurred with codecs, try again or choose another format, for example AVI-JPEG")
+    self.layout.label(text="An error occurred with codecs, try again or choose another container/codec")
 def videoplayer_error(self, context):
     self.layout.label(text="An error occurred with videoplayer, check your aplication videoplayer preferences")
 
@@ -51,6 +51,7 @@ class PL_OT_playblast(bpy.types.Operator):
         if file_format == 'FFMPEG': # Only save container and audio in FFMPEG format
             file_container = bpy.data.scenes[file_scene].render.ffmpeg.format # Output file container
             file_audio = bpy.data.scenes[file_scene].render.ffmpeg.audio_codec
+            file_video_codec = bpy.data.scenes[file_scene].render.ffmpeg.codec
         file_resolution = bpy.data.scenes[file_scene].render.resolution_percentage
         file_stamp = bpy.data.scenes[file_scene].render.use_stamp # Use Stamp
         file_stamp_font_size = bpy.data.scenes[file_scene].render.stamp_font_size
@@ -104,6 +105,7 @@ class PL_OT_playblast(bpy.types.Operator):
         bpy.data.scenes[file_scene].render.image_settings.file_format = prefs.pb_format
         if prefs.pb_format == 'FFMPEG':
             bpy.data.scenes[file_scene].render.ffmpeg.format = prefs.pb_container
+            bpy.data.scenes[file_scene].render.ffmpeg.codec = prefs.pb_video_codec
             bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = prefs.pb_audio
         bpy.data.scenes[file_scene].render.resolution_percentage = prefs.pb_resolution
         bpy.data.scenes[file_scene].render.use_stamp = prefs.pb_stamp
@@ -137,6 +139,7 @@ class PL_OT_playblast(bpy.types.Operator):
             if file_format == 'FFMPEG':
                 bpy.data.scenes[file_scene].render.ffmpeg.format = file_container
                 bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = file_audio
+                bpy.data.scenes[file_scene].render.ffmpeg.codec = file_video_codec
             bpy.data.scenes[file_scene].render.resolution_percentage = file_resolution
             bpy.data.scenes[file_scene].render.use_stamp = file_stamp
             bpy.data.scenes[file_scene].render.stamp_font_size = file_stamp_font_size
