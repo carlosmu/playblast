@@ -127,7 +127,8 @@ class PL_OT_playblast(bpy.types.Operator):
             if prefs.pb_autoplay:
                 try:
                     bpy.ops.render.play_rendered_anim() 
-                except: context.window_manager.popup_menu(videoplayer_error, title="Video player error", icon='ERROR')     
+                except: 
+                    context.window_manager.popup_menu(videoplayer_error, title="Video player error", icon='ERROR')     
         except:
             context.window_manager.popup_menu(codecs_error, title="Codecs error", icon='ERROR')    
         finally:
