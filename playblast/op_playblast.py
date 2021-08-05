@@ -8,11 +8,11 @@ import os
 ##############################################
 
 def warning(self, context):
-    self.layout.label(text="Please save your .blend file first")
+    self.layout.label(text="Please save your blend file first")
 def codecs_error(self, context):
-    self.layout.label(text="An error occurred with codecs, try again or choose another container/codec")
+    self.layout.label(text="Choose another container/codec or set resolution divisible by 2")
 def videoplayer_error(self, context):
-    self.layout.label(text="An error occurred with videoplayer, check your aplication videoplayer preferences")
+    self.layout.label(text="Check your aplication videoplayer preferences")
 
 class PL_OT_playblast(bpy.types.Operator):
     """Improves viewport render animation user experience"""
