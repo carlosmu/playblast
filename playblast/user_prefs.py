@@ -92,7 +92,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
     )
     pb_resolution : bpy.props.FloatProperty(
         name = "Resolution Percentage",
-        description = "Percentage scale for render resolution",
+        description = "Warning: Some codecs impose limitations on output size, H.264, for example requires both the height and width to be divisible by 2",
         default = 50,
         min = 0, soft_min = 1, soft_max = 100, max =400,
         subtype='PERCENTAGE',
