@@ -109,13 +109,18 @@ class PL_OT_playblast(bpy.types.Operator):
             print("divisor", divisor)
             resolution_x = int(file_resolution_x // divisor)
             resolution_y = int(file_resolution_y // divisor)
-            self.force_parity(resolution_x, resolution_y)
-            print("resolution_x,resolution_y", resolution_x,resolution_y)
+            print("Sin chequeo de paridad resolution_x, resolution_y:", resolution_x, resolution_y)
+            resolution_x = self.force_parity(resolution_x)
+            resolution_y = self.force_parity(resolution_y)
+            print("Forzando paridad resolution_x, resolution_y:", resolution_x, resolution_y)
         elif prefs.pb_resize_method == 'MAX_HEIGHT': 
             divisor = file_resolution_y / prefs.pb_resize_max_height # Simple division needed, for precision
             resolution_x = int(file_resolution_x // divisor)
             resolution_y = int(file_resolution_y // divisor)
-            # self.force_parity(resolution_x, resolution_y)
+            print("Sin chequeo de paridad resolution_x, resolution_y:", resolution_x, resolution_y)
+            resolution_x = self.force_parity(resolution_x)
+            resolution_y = self.force_parity(resolution_y)
+            print("Forzando paridad resolution_x, resolution_y:", resolution_x, resolution_y)
         else:
             pass
 
@@ -181,24 +186,14 @@ class PL_OT_playblast(bpy.types.Operator):
             bpy.context.space_data.overlay.show_overlays = file_overlays
             bpy.context.space_data.overlay.show_bones = file_bone_overlays
 
-    def force_parity(self, resolution_x, resolution_y):
-        if resolution_x % 2 != 0 and resolution_y % 2 != 0:
-            print("ninguno de los valores es par, x:", resolution_x, ", y:", resolution_x)
-            resolution_x += 1
-            resolution_y += 1
-            print("ahora sí son pares", resolution_x, resolution_y)
-        elif resolution_x % 2 != 0:
-            print("x no es par: " + str(resolution_x))
-            resolution_x += 1
-            print("ahora sí es par x", resolution_x)
-        elif resolution_y % 2 != 0:
-            print("y no es par: " + str(resolution_y))
-            resolution_y += 1
-            print("ahora sí es par y", resolution_y)
+    def force_parity(self, number):
+        if number % 2 != 0:
+            number += 1
+            print("ahora sí es par numero", number)
         else:
-            print("todo joya", resolution_x, resolution_y)   
+            pass
 
-        return resolution_x, resolution_y            
+        return number            
         
 
 ##############################################

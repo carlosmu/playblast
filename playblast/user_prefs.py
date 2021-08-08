@@ -100,7 +100,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
         description = "Method for resize the current file resolution",
         items = [
             ('PERCENTAGE', 'Resolution Percentage', ''),
-            ('MAX_HEIGHT', 'Max Height (Y) in pixels', ''),
+            ('MAX_HEIGHT', 'Resolution Y (Max height)', ''),
             ('NONE', 'Keep file resolution', '')],
             default = 'PERCENTAGE',
     )
@@ -112,7 +112,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
         subtype='PERCENTAGE',
     )
     pb_resize_max_height : bpy.props.IntProperty(
-        name = "Max Height (Y) in pixels",
+        name = "Resolution Y (Max height) in pixels",
         description = "Max value for Resolution-Y in pixels. Resolution-X will be adjusted automatically ",
         min = 128, max = 2048,
         default = 540,
