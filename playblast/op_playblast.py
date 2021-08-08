@@ -30,6 +30,7 @@ class PL_OT_playblast(bpy.types.Operator):
     #   Playblast functionality
     ##############################################
     def execute(self, context): 
+        print("#############################")
 
         # If file is not saved, show warning message
         if bpy.data.is_saved:       
@@ -45,16 +46,19 @@ class PL_OT_playblast(bpy.types.Operator):
         #################################
         # Save current file render settings
         #################################
-        file_scene =  bpy.context.scene.name_full # Scene
+        file_scene =  bpy.context.scene.name_full # Scene Name
         file_output = bpy.data.scenes[file_scene].render.filepath # Output path
         file_format = bpy.data.scenes[file_scene].render.image_settings.file_format # Output file format
         if file_format == 'FFMPEG': # Only save container and audio in FFMPEG format
-            file_container = bpy.data.scenes[file_scene].render.ffmpeg.format # Output file container
-            file_audio = bpy.data.scenes[file_scene].render.ffmpeg.audio_codec
-            file_video_codec = bpy.data.scenes[file_scene].render.ffmpeg.codec
-        file_resolution = bpy.data.scenes[file_scene].render.resolution_percentage
+            file_container = bpy.data.scenes[file_scene].render.ffmpeg.format # Video Container
+            file_video_codec = bpy.data.scenes[file_scene].render.ffmpeg.codec # Video Codec
+            file_gop = bpy.data.scenes[file_scene].render.ffmpeg.gopsize # GOP
+            file_audio = bpy.data.scenes[file_scene].render.ffmpeg.audio_codec # Audio codec
+        file_resolution_x = bpy.data.scenes[file_scene].render.resolution_x # X Resolution
+        file_resolution_y = bpy.data.scenes[file_scene].render.resolution_y # Y Resolution
+        file_resolution_percentage = bpy.data.scenes[file_scene].render.resolution_percentage # Resolution Percentage
         file_stamp = bpy.data.scenes[file_scene].render.use_stamp # Use Stamp
-        file_stamp_font_size = bpy.data.scenes[file_scene].render.stamp_font_size
+        file_stamp_font_size = bpy.data.scenes[file_scene].render.stamp_font_size # Stamp font size
         file_transparent = bpy.data.scenes[file_scene].render.film_transparent # Film Transparent
         file_overlays = bpy.context.space_data.overlay.show_overlays # Overlays
         file_bone_overlays = bpy.context.space_data.overlay.show_bones # Bone overlays
@@ -97,29 +101,55 @@ class PL_OT_playblast(bpy.types.Operator):
         # Add prefix to output
         output = output + prefix
 
+        # Define resolution x and y
+        print("file resolution x, y:", file_resolution_x, file_resolution_y)
+        print("resize percentage", prefs.pb_resize_percentage)
+        if prefs.pb_resize_method == 'PERCENTAGE':
+            divisor = 100 / prefs.pb_resize_percentage # Simple division needed, for precision
+            print("divisor", divisor)
+            resolution_x = int(file_resolution_x // divisor)
+            resolution_y = int(file_resolution_y // divisor)
+            self.force_parity(resolution_x, resolution_y)
+            print("resolution_x,resolution_y", resolution_x,resolution_y)
+        elif prefs.pb_resize_method == 'MAX_HEIGHT': 
+            divisor = file_resolution_y / prefs.pb_resize_max_height # Simple division needed, for precision
+            resolution_x = int(file_resolution_x // divisor)
+            resolution_y = int(file_resolution_y // divisor)
+            # self.force_parity(resolution_x, resolution_y)
+        else:
+            pass
+
         #################################
         # Overwrite file settings
         #################################
         bpy.data.scenes[file_scene].render.filepath = output
 
         bpy.data.scenes[file_scene].render.image_settings.file_format = prefs.pb_format
+
         if prefs.pb_format == 'FFMPEG':
             bpy.data.scenes[file_scene].render.ffmpeg.format = prefs.pb_container
             bpy.data.scenes[file_scene].render.ffmpeg.codec = prefs.pb_video_codec
+            bpy.data.scenes[file_scene].render.ffmpeg.gopsize = prefs.pb_gop
+            print("the gop is: ", prefs.pb_gop)
             bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = prefs.pb_audio
-        bpy.data.scenes[file_scene].render.resolution_percentage = prefs.pb_resolution
+
+        if prefs.pb_resize_method == 'PERCENTAGE' or prefs.pb_resize_method == 'MAX_HEIGHT':
+            bpy.data.scenes[file_scene].render.resolution_x = resolution_x
+            bpy.data.scenes[file_scene].render.resolution_y = resolution_y
+            bpy.data.scenes[file_scene].render.resolution_percentage = 100 # Prevents unwanted resizing
+
         bpy.data.scenes[file_scene].render.use_stamp = prefs.pb_stamp
         if prefs.pb_stamp:
             bpy.data.scenes[file_scene].render.stamp_font_size = prefs.pb_stamp_font_size
+        
         if prefs.pb_show_environment:
             bpy.data.scenes[file_scene].render.film_transparent = False
-        # Overlays
+        
         if prefs.pb_overlays == 'ALL':
             bpy.context.space_data.overlay.show_overlays = False
-        elif prefs.pb_overlays == 'BONES':
+        
+        if prefs.pb_overlays == 'BONES':
             bpy.context.space_data.overlay.show_bones = False
-        else:
-            pass
         
         # Try to create the video, but mainly protect the user's data
         try:
@@ -139,14 +169,37 @@ class PL_OT_playblast(bpy.types.Operator):
             bpy.data.scenes[file_scene].render.image_settings.file_format = file_format
             if file_format == 'FFMPEG':
                 bpy.data.scenes[file_scene].render.ffmpeg.format = file_container
-                bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = file_audio
                 bpy.data.scenes[file_scene].render.ffmpeg.codec = file_video_codec
-            bpy.data.scenes[file_scene].render.resolution_percentage = file_resolution
+                bpy.data.scenes[file_scene].render.ffmpeg.gopsize = file_gop
+                bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = file_audio
+            bpy.data.scenes[file_scene].render.resolution_x = file_resolution_x
+            bpy.data.scenes[file_scene].render.resolution_y = file_resolution_y
+            bpy.data.scenes[file_scene].render.resolution_percentage = file_resolution_percentage
             bpy.data.scenes[file_scene].render.use_stamp = file_stamp
             bpy.data.scenes[file_scene].render.stamp_font_size = file_stamp_font_size
             bpy.data.scenes[file_scene].render.film_transparent = file_transparent
             bpy.context.space_data.overlay.show_overlays = file_overlays
             bpy.context.space_data.overlay.show_bones = file_bone_overlays
+
+    def force_parity(self, resolution_x, resolution_y):
+        if resolution_x % 2 != 0 and resolution_y % 2 != 0:
+            print("ninguno de los valores es par, x:", resolution_x, ", y:", resolution_x)
+            resolution_x += 1
+            resolution_y += 1
+            print("ahora sí son pares", resolution_x, resolution_y)
+        elif resolution_x % 2 != 0:
+            print("x no es par: " + str(resolution_x))
+            resolution_x += 1
+            print("ahora sí es par x", resolution_x)
+        elif resolution_y % 2 != 0:
+            print("y no es par: " + str(resolution_y))
+            resolution_y += 1
+            print("ahora sí es par y", resolution_y)
+        else:
+            print("todo joya", resolution_x, resolution_y)   
+
+        return resolution_x, resolution_y            
+        
 
 ##############################################
 ## Register/unregister classes and functions

@@ -81,6 +81,11 @@ class PB_Prefs(bpy.types.AddonPreferences):
             ('QTRLE', 'QT rle / QT Animation', '')],
         default = "H264",
     )
+    pb_gop : bpy.props.IntProperty(
+        name = "Keyframe Interval",
+        description = "Distance between keyframes, also known as GOP size; influences file size and seekability",
+        default = 18,
+    )
     pb_audio : bpy.props.EnumProperty(
         name = "Audio Codec",
         description = "Audio codec",
@@ -90,13 +95,27 @@ class PB_Prefs(bpy.types.AddonPreferences):
             ('MP3', 'MP3', '')],
         default = "NONE",
     )
-    pb_resolution : bpy.props.FloatProperty(
+    pb_resize_method : bpy.props.EnumProperty(
+        name = "Resize Method",
+        description = "Method for resize the current file resolution",
+        items = [
+            ('PERCENTAGE', 'Resolution Percentage', ''),
+            ('MAX_HEIGHT', 'Max Height (Y) in pixels', ''),
+            ('NONE', 'Keep file resolution', '')],
+            default = 'PERCENTAGE',
+    )
+    pb_resize_percentage : bpy.props.IntProperty(
         name = "Resolution Percentage",
         description = "Warning: Some codecs impose limitations on output size, H.264, for example requires both the height and width to be divisible by 2",
         default = 50,
-        min = 0, soft_min = 1, soft_max = 100, max =400,
+        min = 0, soft_min = 10, soft_max = 100, max =200,
         subtype='PERCENTAGE',
-        precision = 0,
+    )
+    pb_resize_max_height : bpy.props.IntProperty(
+        name = "Max Height (Y) in pixels",
+        description = "Max value for Resolution-Y in pixels. Resolution-X will be adjusted automatically ",
+        min = 128, max = 2048,
+        default = 540,
     )
     pb_stamp : bpy.props.BoolProperty(
         name = "Stamp Metadata",
@@ -191,12 +210,21 @@ class PB_Prefs(bpy.types.AddonPreferences):
         if prefs.pb_format == 'FFMPEG':
             box.prop(self, "pb_container")
             box.prop(self, "pb_video_codec")
+            box.prop(self, "pb_gop")
             box.prop(self, "pb_audio")
         box.separator()
 
         # Set resolution
-        box.prop(self, "pb_resolution")
-        box.separator()
+        row = box.row()
+        row.prop(self, "pb_resize_method")
+        if prefs.pb_resize_method == 'PERCENTAGE':
+            row.prop(self, "pb_resize_percentage", text="")
+            box.separator()
+        elif prefs.pb_resize_method == 'MAX_HEIGHT':
+            row.prop(self, "pb_resize_max_height", text="")
+            box.separator()
+        else:
+            pass    
 
         row = box.row()
         # Enable Stamp
