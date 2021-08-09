@@ -106,7 +106,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
     )
     pb_resize_percentage : bpy.props.IntProperty(
         name = "Resolution Percentage",
-        description = "Warning: H.264 requires both the height and width to be divisible by 2",
+        description = "H.264 codec requires both the height and width to be divisible by 2",
         default = 50,
         min = 0, soft_min = 10, soft_max = 100, max =200,
         subtype='PERCENTAGE',
