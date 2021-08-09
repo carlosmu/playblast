@@ -10,7 +10,7 @@ import os
 def warning(self, context):
     self.layout.label(text="Please save your blend file first")
 def codecs_error(self, context):
-    self.layout.label(text="Choose another container/codec or set resolution divisible by 2")
+    self.layout.label(text="Set resolution divisible by 2, or choose another container/codec combination")
 def videoplayer_error(self, context):
     self.layout.label(text="Check your aplication videoplayer preferences")
 
@@ -30,7 +30,6 @@ class PL_OT_playblast(bpy.types.Operator):
     #   Playblast functionality
     ##############################################
     def execute(self, context): 
-        print("#############################")
 
         # If file is not saved, show warning message
         if bpy.data.is_saved:       
@@ -101,26 +100,19 @@ class PL_OT_playblast(bpy.types.Operator):
         # Add prefix to output
         output = output + prefix
 
-        # Define resolution x and y
-        print("file resolution x, y:", file_resolution_x, file_resolution_y)
-        print("resize percentage", prefs.pb_resize_percentage)
+        # Define resolution x and y, and force divisible
         if prefs.pb_resize_method == 'PERCENTAGE':
             divisor = 100 / prefs.pb_resize_percentage # Simple division needed, for precision
-            print("divisor", divisor)
             resolution_x = int(file_resolution_x // divisor)
             resolution_y = int(file_resolution_y // divisor)
-            print("Sin chequeo de paridad resolution_x, resolution_y:", resolution_x, resolution_y)
-            resolution_x = self.force_parity(resolution_x)
-            resolution_y = self.force_parity(resolution_y)
-            print("Forzando paridad resolution_x, resolution_y:", resolution_x, resolution_y)
+            resolution_x = self.force_divisible(resolution_x)
+            resolution_y = self.force_divisible(resolution_y)
         elif prefs.pb_resize_method == 'MAX_HEIGHT': 
             divisor = file_resolution_y / prefs.pb_resize_max_height # Simple division needed, for precision
             resolution_x = int(file_resolution_x // divisor)
             resolution_y = int(file_resolution_y // divisor)
-            print("Sin chequeo de paridad resolution_x, resolution_y:", resolution_x, resolution_y)
-            resolution_x = self.force_parity(resolution_x)
-            resolution_y = self.force_parity(resolution_y)
-            print("Forzando paridad resolution_x, resolution_y:", resolution_x, resolution_y)
+            resolution_x = self.force_divisible(resolution_x)
+            resolution_y = self.force_divisible(resolution_y)
         else:
             pass
 
@@ -135,7 +127,6 @@ class PL_OT_playblast(bpy.types.Operator):
             bpy.data.scenes[file_scene].render.ffmpeg.format = prefs.pb_container
             bpy.data.scenes[file_scene].render.ffmpeg.codec = prefs.pb_video_codec
             bpy.data.scenes[file_scene].render.ffmpeg.gopsize = prefs.pb_gop
-            print("the gop is: ", prefs.pb_gop)
             bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = prefs.pb_audio
 
         if prefs.pb_resize_method == 'PERCENTAGE' or prefs.pb_resize_method == 'MAX_HEIGHT':
@@ -186,10 +177,13 @@ class PL_OT_playblast(bpy.types.Operator):
             bpy.context.space_data.overlay.show_overlays = file_overlays
             bpy.context.space_data.overlay.show_bones = file_bone_overlays
 
-    def force_parity(self, number):
+    def force_divisible(self, number):
         if number % 2 != 0:
+            print("Resolution value", number, "is not divisible by 2")
+            self.report({'INFO'}, "Resolution value " + str(number) + " is not divisible by 2")
             number += 1
-            print("ahora sí es par numero", number)
+            self.report({'INFO'}, "Playblast addon changed that value to " + str(number))
+            print("Playblast addon changed that value to", number)
         else:
             pass
 

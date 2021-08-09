@@ -14,7 +14,6 @@ def playblast_ui_main_menu(self, context):
         else:
             layout.operator("pl.playblast", icon='FILE_MOVIE') 
 
-
 ##############################################
 ## CONTEXT MENU BUTTON
 ##############################################
