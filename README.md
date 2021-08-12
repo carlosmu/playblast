@@ -1,4 +1,4 @@
-# playblast
+# Playblast (Blender Addon)
 Blender Addon for improve viewport render animation user experience. This addon allows you to keep the final render options and playblast options separately. 
 
 ## To support the development of this and other addons, you can:
