@@ -2,6 +2,5 @@
 *.pyc
 **/BL_proxy/
 
-*.zip
 *.PNG~
 *.png~
