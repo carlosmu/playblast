@@ -15,7 +15,7 @@ def videoplayer_error(self, context):
     self.layout.label(text="Check your aplication videoplayer preferences")
 
 class PL_OT_playblast(bpy.types.Operator):
-    """Improves viewport render animation user experience"""
+    """Quick viewport render of the animation range"""
     bl_idname = "pl.playblast"
     bl_label = "Playblast"  
     bl_options = {'REGISTER', 'UNDO'}
