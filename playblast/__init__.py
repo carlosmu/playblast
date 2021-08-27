@@ -15,7 +15,7 @@ bl_info = {
     "name" : "Playblast",
     "author" : "carlosmu <carlos.damian.munoz@gmail.com>",    
     "blender" : (2, 83, 0),
-    "version" : (1, 0, 1),
+    "version" : (1, 0, 2),
     "category" : "Animation",
     "location" : "3D View Main Menu and/or Right Click Context Menu",
     "description" : "Improves viewport render animation user experience",

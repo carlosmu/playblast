@@ -53,6 +53,8 @@ class PL_OT_playblast(bpy.types.Operator):
             file_video_codec = bpy.data.scenes[file_scene].render.ffmpeg.codec # Video Codec
             file_gop = bpy.data.scenes[file_scene].render.ffmpeg.gopsize # GOP
             file_audio = bpy.data.scenes[file_scene].render.ffmpeg.audio_codec # Audio codec
+        file_color_mode = bpy.data.scenes[file_scene].render.image_settings.color_mode # Color Mode
+        file_color_depth = bpy.data.scenes[file_scene].render.image_settings.color_depth # Color Depth
         file_resolution_x = bpy.data.scenes[file_scene].render.resolution_x # X Resolution
         file_resolution_y = bpy.data.scenes[file_scene].render.resolution_y # Y Resolution
         file_resolution_percentage = bpy.data.scenes[file_scene].render.resolution_percentage # Resolution Percentage
@@ -168,6 +170,8 @@ class PL_OT_playblast(bpy.types.Operator):
                 bpy.data.scenes[file_scene].render.ffmpeg.codec = file_video_codec
                 bpy.data.scenes[file_scene].render.ffmpeg.gopsize = file_gop
                 bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = file_audio
+            bpy.data.scenes[file_scene].render.image_settings.color_mode = file_color_mode
+            bpy.data.scenes[file_scene].render.image_settings.color_depth = file_color_depth
             bpy.data.scenes[file_scene].render.resolution_x = file_resolution_x
             bpy.data.scenes[file_scene].render.resolution_y = file_resolution_y
             bpy.data.scenes[file_scene].render.resolution_percentage = file_resolution_percentage
