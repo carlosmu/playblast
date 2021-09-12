@@ -11,8 +11,10 @@ def playblast_ui_main_menu(self, context):
     if prefs.pb_enable_3dview_menu: 
         if prefs.pb_icon_only:    
             layout.operator("pl.playblast", icon='FILE_MOVIE', text = '') 
+            layout.operator("pl.turntable_camera", icon='CON_CAMERASOLVER', text = '') 
         else:
             layout.operator("pl.playblast", icon='FILE_MOVIE') 
+            layout.operator("pl.turntable_camera", icon='CON_CAMERASOLVER', text = "Turntable") 
 
 ##############################################
 ## CONTEXT MENU BUTTON
@@ -24,6 +26,7 @@ def playblast_ui_context_menu(self, context):
     layout = self.layout 
     if prefs.pb_enable_context_menu:     
         layout.operator("pl.playblast", icon='FILE_MOVIE') 
+        layout.operator("pl.turntable_camera", icon='CON_CAMERASOLVER')
 
 
 ##############################################
