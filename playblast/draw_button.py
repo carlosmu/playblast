@@ -8,6 +8,7 @@ def playblast_ui_main_menu(self, context):
     prefs = context.preferences.addons[__package__].preferences
 
     layout = self.layout 
+    layout.separator()
     if prefs.pb_enable_3dview_menu: 
         if prefs.pb_icon_only:    
             layout.operator("pl.playblast", icon='FILE_MOVIE', text = '') 
@@ -24,7 +25,7 @@ def playblast_ui_context_menu(self, context):
     prefs = context.preferences.addons[__package__].preferences
 
     layout = self.layout 
-    if prefs.pb_enable_context_menu:
+    if prefs.pb_enable_context_menu:        
         layout.separator()     
         layout.operator("pl.playblast", icon='FILE_MOVIE') 
         layout.operator("pl.turntable_camera", icon='CON_CAMERASOLVER')

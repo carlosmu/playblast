@@ -1,6 +1,5 @@
 
 import bpy
-from bpy.types import Camera, FCurve
 
 class PL_OT_turntable_camera(bpy.types.Operator):
     """Create Turntable Camera"""
@@ -86,7 +85,7 @@ class PL_OT_turntable_camera(bpy.types.Operator):
             camera = bpy.data.objects["Turntable_Camera"]
 
         camera.location=(0, self.camera_distance * -1, 0) 
-        
+
         # Create Empty
         if not "Turntable_Rotation" in bpy.data.objects:
             empty = bpy.data.objects.new("Turntable_Rotation", None)
@@ -156,12 +155,11 @@ class PL_OT_turntable_camera(bpy.types.Operator):
         box.prop(self, "active_camera")
         box.prop(self, "invert_direction")
         box.prop(self, "interpolation_type")
-
         box.separator()
 
 
 ##############################################
-## Register/unregister classes and functions
+## REGISTER/UNREGISTER
 ##############################################
 def register():
     bpy.utils.register_class(PL_OT_turntable_camera)
