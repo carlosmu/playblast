@@ -4,3 +4,7 @@
 
 *.PNG~
 *.png~
+
+# Development releases
+*_alpha*
+*_beta*
