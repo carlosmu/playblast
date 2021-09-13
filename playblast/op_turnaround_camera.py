@@ -1,22 +1,22 @@
 
 import bpy
 
-class PL_OT_turntable_camera(bpy.types.Operator):
-    """Create Turntable Camera"""
-    bl_idname = "pl.turntable_camera"
-    bl_label = "Turntable Camera"  
+class PL_OT_turnaround_camera(bpy.types.Operator):
+    """Create Turnaround Camera"""
+    bl_idname = "pl.turnaround_camera"
+    bl_label = "Turnaround Camera"  
     bl_options = {'REGISTER', 'UNDO'}
 
     # Creation Settings
     start_frame : bpy.props.IntProperty(
         name = "Start Frame",
-        description = "Start Frame for Turntable Camera Animation",
+        description = "Start Frame for Turnaround Camera Animation",
         default = 1,
         soft_min= 0,
     )
     end_frame : bpy.props.IntProperty(
         name = "End Frame",
-        description = "End Frame for Turntable Camera Animation",
+        description = "End Frame for Turnaround Camera Animation",
         default = 200,
         soft_min= 0,
     )
@@ -33,7 +33,7 @@ class PL_OT_turntable_camera(bpy.types.Operator):
     )
     invert_direction : bpy.props.BoolProperty(
         name = "Invert Direction",
-        description = "Invert the direction of turntable rotation",
+        description = "Invert the direction of turnaround rotation",
         default = False,
     )
     interpolation_type : bpy.props.EnumProperty(
@@ -53,47 +53,47 @@ class PL_OT_turntable_camera(bpy.types.Operator):
 
     def execute(self, context): 
         # Manipulation of variables
-        turntable_rotation = 6.28319 # In radians
+        turnaround_rotation = 6.28319 # In radians
 
         # Invert direction
         if self.invert_direction:
-            turntable_rotation *= -1
+            turnaround_rotation *= -1
 
         # Set start and end frame of scene
         scene = bpy.context.scene
         scene.frame_start = self.start_frame
         scene.frame_end = self.end_frame
 
-        # Create Turntable Collection and link to main collection
-        if not "Turntable" in bpy.data.collections:
-            collection = bpy.data.collections.new("Turntable")
+        # Create Turnaround Collection and link to main collection
+        if not "Turnaround" in bpy.data.collections:
+            collection = bpy.data.collections.new("Turnaround")
             bpy.context.scene.collection.children.link(collection)
         else:
-            collection = bpy.data.collections["Turntable"]
+            collection = bpy.data.collections["Turnaround"]
 
         # Create Camera
-        if not "Turntable_Cam" in bpy.data.cameras:
-            cam = bpy.data.cameras.new("Turntable_Cam")
+        if not "Turnaround_Cam" in bpy.data.cameras:
+            cam = bpy.data.cameras.new("Turnaround_Cam")
         else:
-            cam = bpy.data.cameras["Turntable_Cam"]
+            cam = bpy.data.cameras["Turnaround_Cam"]
 
-        if not "Turntable_Camera" in bpy.data.objects:
-            camera = bpy.data.objects.new("Turntable_Camera", cam)
+        if not "Turnaround_Camera" in bpy.data.objects:
+            camera = bpy.data.objects.new("Turnaround_Camera", cam)
             camera.rotation_euler=(1.5708, 0.0, 0.0)
             collection.objects.link(camera)
         else:
-            camera = bpy.data.objects["Turntable_Camera"]
+            camera = bpy.data.objects["Turnaround_Camera"]
 
         camera.location=(0, self.camera_distance * -1, 0) 
 
         # Create Empty
-        if not "Turntable_Rotation" in bpy.data.objects:
-            empty = bpy.data.objects.new("Turntable_Rotation", None)
+        if not "Turnaround_Rotation" in bpy.data.objects:
+            empty = bpy.data.objects.new("Turnaround_Rotation", None)
             empty.empty_display_size = 2
             empty.empty_display_type = 'PLAIN_AXES'
             collection.objects.link(empty)
         else:
-            empty = bpy.data.objects["Turntable_Rotation"]
+            empty = bpy.data.objects["Turnaround_Rotation"]
 
         # Parent camera to empty
         camera.parent = empty
@@ -106,10 +106,10 @@ class PL_OT_turntable_camera(bpy.types.Operator):
         if self.active_camera:
             bpy.context.scene.camera = camera
 
-        if not "Turntable_Action" in bpy.data.actions:
-            action = bpy.data.actions.new("Turntable_Action")
+        if not "Turnaround_Action" in bpy.data.actions:
+            action = bpy.data.actions.new("Turnaround_Action")
         else:
-            action = bpy.data.actions["Turntable_Action"]
+            action = bpy.data.actions["Turnaround_Action"]
         
         # Remove fcurves
         if action.fcurves:
@@ -126,7 +126,7 @@ class PL_OT_turntable_camera(bpy.types.Operator):
         empty.keyframe_insert(data_path="rotation_euler", index=2, frame=self.start_frame)
 
         # Insert end keyframe (360 degrees in Z axis)
-        empty.rotation_euler[2] = turntable_rotation
+        empty.rotation_euler[2] = turnaround_rotation
         empty.keyframe_insert(data_path="rotation_euler", index=2, frame=self.end_frame)
 
         # Select action and set interpolation type
@@ -162,8 +162,8 @@ class PL_OT_turntable_camera(bpy.types.Operator):
 ## REGISTER/UNREGISTER
 ##############################################
 def register():
-    bpy.utils.register_class(PL_OT_turntable_camera)
+    bpy.utils.register_class(PL_OT_turnaround_camera)
         
 def unregister():
-    bpy.utils.unregister_class(PL_OT_turntable_camera)
+    bpy.utils.unregister_class(PL_OT_turnaround_camera)
 

@@ -11,11 +11,9 @@ def playblast_ui_main_menu(self, context):
     layout.separator()
     if prefs.pb_enable_3dview_menu: 
         if prefs.pb_icon_only:    
-            layout.operator("pl.playblast", icon='FILE_MOVIE', text = '') 
-            layout.operator("pl.turntable_camera", icon='CON_CAMERASOLVER', text = '') 
+            layout.operator("pl.playblast", icon='FILE_MOVIE', text = "") 
         else:
             layout.operator("pl.playblast", icon='FILE_MOVIE') 
-            layout.operator("pl.turntable_camera", icon='CON_CAMERASOLVER', text = "Turntable") 
 
 ##############################################
 ## CONTEXT MENU BUTTON
@@ -28,7 +26,19 @@ def playblast_ui_context_menu(self, context):
     if prefs.pb_enable_context_menu:        
         layout.separator()     
         layout.operator("pl.playblast", icon='FILE_MOVIE') 
-        layout.operator("pl.turntable_camera", icon='CON_CAMERASOLVER')
+        layout.operator("pl.turnaround_camera", icon='CON_CAMERASOLVER', text = "Add Turnaround Camera")
+
+##############################################
+## ADD OBJECT MENU BUTTON
+##############################################
+def playblast_ui_add_menu(self, context):
+
+    prefs = context.preferences.addons[__package__].preferences
+
+    layout = self.layout 
+    if prefs.pb_enable_add_menu:
+        layout.separator()     
+        layout.operator("pl.turnaround_camera", icon='CON_CAMERASOLVER', text = "Turnaround Camera")
 
 
 ##############################################
@@ -37,7 +47,9 @@ def playblast_ui_context_menu(self, context):
 def register():
     bpy.types.VIEW3D_MT_editor_menus.append(playblast_ui_main_menu) 
     bpy.types.VIEW3D_MT_object_context_menu.append(playblast_ui_context_menu) 
+    bpy.types.VIEW3D_MT_add.append(playblast_ui_add_menu) 
         
 def unregister():
     bpy.types.VIEW3D_MT_editor_menus.remove(playblast_ui_main_menu) 
     bpy.types.VIEW3D_MT_object_context_menu.remove(playblast_ui_context_menu) 
+    bpy.types.VIEW3D_MT_add.remove(playblast_ui_add_menu) 

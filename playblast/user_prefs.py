@@ -156,6 +156,11 @@ class PB_Prefs(bpy.types.AddonPreferences):
         description = "Enable UI Button on Right Click (or W) Object Context Menu",
         default = True,
     )
+    pb_enable_add_menu : bpy.props.BoolProperty(
+        name = "Add Menu (For Turnaround Camera)",
+        description = "Enable UI Button on Add Menu (Shift A)",
+        default = True,
+    )
     pb_icon_only : bpy.props.BoolProperty(
         name = "Icon Only",
         description = 'Hide the word "Playblast" on Main Menu Button',
@@ -240,6 +245,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
         box.label(text="Show UI Buttons", icon = 'SHADERFX')
         # Enable Button on Context
         box.prop(self, "pb_enable_context_menu")
+        box.prop(self, "pb_enable_add_menu")
         row = box.row()
         # Enable Button on 3dview Menu
         row.prop(self, "pb_enable_3dview_menu")

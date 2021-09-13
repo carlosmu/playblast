@@ -28,7 +28,7 @@ import bpy
 
 from . import draw_button
 from . import op_playblast
-from . import op_turntable_camera
+from . import op_turnaround_camera
 from . import user_prefs
 
 ####################################
@@ -37,11 +37,11 @@ from . import user_prefs
 def register():
     draw_button.register()
     op_playblast.register() 
-    op_turntable_camera.register() 
+    op_turnaround_camera.register() 
     user_prefs.register()   
         
 def unregister():
     draw_button.unregister()
     op_playblast.unregister() 
-    op_turntable_camera.unregister() 
+    op_turnaround_camera.unregister() 
     user_prefs.unregister() 
