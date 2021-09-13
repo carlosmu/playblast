@@ -1,6 +1,6 @@
 
 import bpy
-from bpy.types import Camera
+from bpy.types import Camera, FCurve
 
 class PL_OT_turntable_camera(bpy.types.Operator):
     """Create Turntable Camera"""
@@ -55,6 +55,8 @@ class PL_OT_turntable_camera(bpy.types.Operator):
     def execute(self, context): 
         # Manipulation of variables
         turntable_rotation = 6.28319 # In radians
+
+        # Invert direction
         if self.invert_direction:
             turntable_rotation *= -1
 
@@ -71,7 +73,7 @@ class PL_OT_turntable_camera(bpy.types.Operator):
             collection = bpy.data.collections["Turntable"]
 
         # Create Camera
-        if not "Turntable Cam" in bpy.data.cameras:
+        if not "Turntable_Cam" in bpy.data.cameras:
             cam = bpy.data.cameras.new("Turntable_Cam")
         else:
             cam = bpy.data.cameras["Turntable_Cam"]
@@ -79,16 +81,17 @@ class PL_OT_turntable_camera(bpy.types.Operator):
         if not "Turntable_Camera" in bpy.data.objects:
             camera = bpy.data.objects.new("Turntable_Camera", cam)
             camera.rotation_euler=(1.5708, 0.0, 0.0)
-            camera.location=(0, self.camera_distance * -1, 0) 
             collection.objects.link(camera)
         else:
             camera = bpy.data.objects["Turntable_Camera"]
 
+        camera.location=(0, self.camera_distance * -1, 0) 
+        
         # Create Empty
         if not "Turntable_Rotation" in bpy.data.objects:
             empty = bpy.data.objects.new("Turntable_Rotation", None)
             empty.empty_display_size = 2
-            empty.empty_display_type = 'SPHERE'
+            empty.empty_display_type = 'PLAIN_AXES'
             collection.objects.link(empty)
         else:
             empty = bpy.data.objects["Turntable_Rotation"]
@@ -96,13 +99,28 @@ class PL_OT_turntable_camera(bpy.types.Operator):
         # Parent camera to empty
         camera.parent = empty
 
-        # Link camera and empty to Turntable Collection
-        
-        
+        # Set empty as active
+        empty.select_set(True) 
+        bpy.context.view_layer.objects.active = empty
 
         # Set scene active camera
         if self.active_camera:
             bpy.context.scene.camera = camera
+
+        if not "Turntable_Action" in bpy.data.actions:
+            action = bpy.data.actions.new("Turntable_Action")
+        else:
+            action = bpy.data.actions["Turntable_Action"]
+        
+        # Remove fcurves
+        if action.fcurves:
+            fc = action.fcurves
+            fc.remove(fc[0])
+
+        # Set active action
+        if empty.animation_data is None:
+            empty.animation_data_create()
+        empty.animation_data.action = action
 
         # Insert start keyframe (0,0,0)     
         empty.rotation_euler[2] = 0
@@ -115,9 +133,6 @@ class PL_OT_turntable_camera(bpy.types.Operator):
         # Select action and set interpolation type
         action = empty.animation_data.action
         action.fcurves[0].keyframe_points[0].interpolation = self.interpolation_type
-
-        empty.select_set(True) 
-        bpy.context.view_layer.objects.active = empty
 
         return{'FINISHED'}
 
