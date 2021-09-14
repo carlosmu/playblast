@@ -26,6 +26,7 @@ def playblast_ui_context_menu(self, context):
     if prefs.pb_enable_context_menu:        
         layout.separator()     
         layout.operator("pl.playblast", icon='FILE_MOVIE') 
+        layout.operator_context = "INVOKE_DEFAULT" # Used for display popup on creation
         layout.operator("pl.turnaround_camera", icon='CON_CAMERASOLVER', text = "Add Turnaround Camera")
 
 ##############################################
@@ -37,7 +38,8 @@ def playblast_ui_add_menu(self, context):
 
     layout = self.layout 
     if prefs.pb_enable_add_menu:
-        layout.separator()     
+        layout.separator()    
+        layout.operator_context = "INVOKE_DEFAULT" # Used for display popup on creation 
         layout.operator("pl.turnaround_camera", icon='CON_CAMERASOLVER', text = "Turnaround Camera")
 
 
