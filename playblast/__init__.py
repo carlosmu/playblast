@@ -11,37 +11,48 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-bl_info = {
-    "name" : "Playblast",
-    "author" : "carlosmu <carlos.damian.munoz@gmail.com>",    
-    "blender" : (2, 83, 0),
-    "version" : (1, 1, 0),
-    "category" : "Animation",
-    "location" : "3D View Main Menu and/or Right Click Context Menu",
-    "description" : "Improves viewport render animation user experience",
-    "warning" : "",
-    "doc_url" : "https://blendermarket.com/products/playblast",
-    "tracker_url" : "https://blendermarket.com/creators/carlosmu",
-}
-
-import bpy
+####################################
+# IMPORT MODULES
+####################################
 
 from . import draw_button
 from . import op_playblast
+from . import op_player
 from . import op_turnaround_camera
 from . import user_prefs
+from . import keymap
+
+bl_info = {
+    "name": "Playblast",
+    "author": "carlosmu <carlos.damian.munoz@gmail.com>",
+    "blender": (2, 83, 0),
+    "version": (1, 1, 0),
+    "category": "Animation",
+    "location": "3D View Main Menu and/or Right Click Context Menu",
+    "description": "Improves viewport render animation user experience",
+    "warning": "",
+    "doc_url": "https://blendermarket.com/products/playblast",
+    "tracker_url": "https://blendermarket.com/creators/carlosmu",
+}
 
 ####################################
 # REGISTER/UNREGISTER
 ####################################
+
+
 def register():
     draw_button.register()
-    op_playblast.register() 
-    op_turnaround_camera.register() 
-    user_prefs.register()   
-        
+    op_playblast.register()
+    op_player.register()
+    op_turnaround_camera.register()
+    user_prefs.register()
+    keymap.register()
+
+
 def unregister():
     draw_button.unregister()
-    op_playblast.unregister() 
-    op_turnaround_camera.unregister() 
-    user_prefs.unregister() 
+    op_playblast.unregister()
+    op_player.unregister()
+    op_turnaround_camera.unregister()
+    user_prefs.unregister()
+    keymap.unregister()

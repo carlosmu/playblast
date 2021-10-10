@@ -1,59 +1,60 @@
 
 import bpy
 
+
 class PL_OT_turnaround_camera(bpy.types.Operator):
-    """Create Turnaround Camera"""
-    bl_idname = "pl.turnaround_camera"
-    bl_label = "Turnaround Camera"  
+    """Create Turnaround Camera (overwrites pre-existing ones)"""
+    bl_idname = "playblast.turnaround_camera"
+    bl_label = "Turnaround Camera"
     bl_options = {'REGISTER', 'UNDO'}
 
     # Creation Settings
-    start_frame : bpy.props.IntProperty(
-        name = "Start Frame",
-        description = "Start Frame for Turnaround Camera Animation",
-        default = 1,
-        soft_min= 0,
+    start_frame: bpy.props.IntProperty(
+        name="Start Frame",
+        description="Start Frame for Turnaround Camera Animation",
+        default=1,
+        soft_min=0,
     )
-    end_frame : bpy.props.IntProperty(
-        name = "End Frame",
-        description = "End Frame for Turnaround Camera Animation",
-        default = 200,
-        soft_min= 0,
+    end_frame: bpy.props.IntProperty(
+        name="End Frame",
+        description="End Frame for Turnaround Camera Animation",
+        default=200,
+        soft_min=0,
     )
-    camera_distance : bpy.props.IntProperty(
-        name = "Camera Distance",
-        description = "Camera Distance to the center of interest (in meters)",
-        default = 10,
-        soft_min= 0,
+    camera_distance: bpy.props.IntProperty(
+        name="Camera Distance",
+        description="Camera Distance to the center of interest (in meters)",
+        default=10,
+        soft_min=0,
     )
-    active_camera : bpy.props.BoolProperty(
-        name = "Set Active Camera",
-        description = "Active camera, used for rendering the scene",
-        default = True,
+    active_camera: bpy.props.BoolProperty(
+        name="Set Active Camera",
+        description="Active camera, used for rendering the scene",
+        default=True,
     )
-    invert_direction : bpy.props.BoolProperty(
-        name = "Invert Direction",
-        description = "Invert the direction of turnaround rotation",
-        default = False,
+    invert_direction: bpy.props.BoolProperty(
+        name="Invert Direction",
+        description="Invert the direction of turnaround rotation",
+        default=False,
     )
-    interpolation_type : bpy.props.EnumProperty(
-        name = "Interpolation Type",
-        description = "Interpolation Type between keyframes",
-        items = [('LINEAR', 'Linear', ''),
-                ('BEZIER', 'Bezier', ''),
-                ('BACK', 'Back', ''),],
-        default = 'LINEAR'
+    interpolation_type: bpy.props.EnumProperty(
+        name="Interpolation Type",
+        description="Interpolation Type between keyframes",
+        items=[('LINEAR', 'Linear', ''),
+               ('BEZIER', 'Bezier', ''),
+               ('BACK', 'Back', ''), ],
+        default='LINEAR'
     )
- 
+
     # Prevents operator appearing in unsupported editors
     @classmethod
     def poll(cls, context):
         if (context.area.ui_type == 'VIEW_3D'):
-            return True 
+            return True
 
-    def execute(self, context): 
+    def execute(self, context):
         # Manipulation of variables
-        turnaround_rotation = 6.28319 # In radians
+        turnaround_rotation = 6.28319  # In radians
 
         # Invert direction
         if self.invert_direction:
@@ -79,12 +80,12 @@ class PL_OT_turnaround_camera(bpy.types.Operator):
 
         if not "Turnaround_Camera" in bpy.data.objects:
             camera = bpy.data.objects.new("Turnaround_Camera", cam)
-            camera.rotation_euler=(1.5708, 0.0, 0.0)
+            camera.rotation_euler = (1.5708, 0.0, 0.0)
             collection.objects.link(camera)
         else:
             camera = bpy.data.objects["Turnaround_Camera"]
 
-        camera.location=(0, self.camera_distance * -1, 0) 
+        camera.location = (0, self.camera_distance * -1, 0)
 
         # Create Empty
         if not "Turnaround_Rotation" in bpy.data.objects:
@@ -99,7 +100,7 @@ class PL_OT_turnaround_camera(bpy.types.Operator):
         camera.parent = empty
 
         # Set empty as active
-        empty.select_set(True) 
+        empty.select_set(True)
         bpy.context.view_layer.objects.active = empty
 
         # Set scene active camera
@@ -110,7 +111,7 @@ class PL_OT_turnaround_camera(bpy.types.Operator):
             action = bpy.data.actions.new("Turnaround_Action")
         else:
             action = bpy.data.actions["Turnaround_Action"]
-        
+
         # Remove fcurves
         if action.fcurves:
             fc = action.fcurves
@@ -121,13 +122,15 @@ class PL_OT_turnaround_camera(bpy.types.Operator):
             empty.animation_data_create()
         empty.animation_data.action = action
 
-        # Insert start keyframe (0,0,0)     
+        # Insert start keyframe (0,0,0)
         empty.rotation_euler[2] = 0
-        empty.keyframe_insert(data_path="rotation_euler", index=2, frame=self.start_frame)
+        empty.keyframe_insert(data_path="rotation_euler",
+                              index=2, frame=self.start_frame)
 
         # Insert end keyframe (360 degrees in Z axis)
         empty.rotation_euler[2] = turnaround_rotation
-        empty.keyframe_insert(data_path="rotation_euler", index=2, frame=self.end_frame)
+        empty.keyframe_insert(data_path="rotation_euler",
+                              index=2, frame=self.end_frame)
 
         # Select action and set interpolation type
         action = empty.animation_data.action
@@ -138,7 +141,7 @@ class PL_OT_turnaround_camera(bpy.types.Operator):
     # Popup
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
-    
+
     # Custom Draw
     def draw(self, context):
         layout = self.layout
@@ -159,11 +162,11 @@ class PL_OT_turnaround_camera(bpy.types.Operator):
 
 
 ##############################################
-## REGISTER/UNREGISTER
+# REGISTER/UNREGISTER
 ##############################################
 def register():
     bpy.utils.register_class(PL_OT_turnaround_camera)
-        
+
+
 def unregister():
     bpy.utils.unregister_class(PL_OT_turnaround_camera)
-

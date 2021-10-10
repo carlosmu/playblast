@@ -12,19 +12,19 @@ def warning(self, context):
     self.layout.label(text="Please save your blend file first")
 
 
-def codecs_error(self, context):
-    self.layout.label(
-        text="Set resolution divisible by 2, or choose another container/codec combination")
+# def codecs_error(self, context):
+#     self.layout.label(
+#         text="Set resolution divisible by 2, or choose another container/codec combination")
 
 
 def videoplayer_error(self, context):
     self.layout.label(text="Check your aplication videoplayer preferences")
 
 
-class PL_OT_playblast(bpy.types.Operator):
-    """Quick viewport render of the animation framerange using the addon-preferences"""
-    bl_idname = "playblast.playblast"
-    bl_label = "Playblast"
+class PL_OT_player(bpy.types.Operator):
+    """Plays the last playblast that matches the same parameters (render settings, framerange, etc)"""
+    bl_idname = "playblast.player"
+    bl_label = "Replay"
     bl_options = {'REGISTER', 'UNDO'}
 
     # Prevents operator appearing in unsupported editors
@@ -173,17 +173,22 @@ class PL_OT_playblast(bpy.types.Operator):
             bpy.context.space_data.overlay.show_bones = False
 
         # Try to create the video, but mainly protect the user's data
+        # try:
+        #     bpy.ops.render.opengl(animation=True)
+        #     if prefs.pb_autoplay:
+        #         try:
+        #             bpy.ops.render.play_rendered_anim()
+        #         except:
+        #             context.window_manager.popup_menu(videoplayer_error, title="Video player error", icon='ERROR')
+        # except:
+        #     context.window_manager.popup_menu(codecs_error, title="Codecs error", icon='ERROR')
+
+        # Try to replay vide, but mainly protect the user's data
         try:
-            bpy.ops.render.opengl(animation=True)
-            if prefs.pb_autoplay:
-                try:
-                    bpy.ops.render.play_rendered_anim()
-                except:
-                    context.window_manager.popup_menu(
-                        videoplayer_error, title="Video player error", icon='ERROR')
+            bpy.ops.render.play_rendered_anim()
         except:
             context.window_manager.popup_menu(
-                codecs_error, title="Codecs error", icon='ERROR')
+                videoplayer_error, title="Video player error", icon='ERROR')
         finally:
             #################################
             # Recover previous file settings
@@ -225,8 +230,8 @@ class PL_OT_playblast(bpy.types.Operator):
 # Register/unregister classes and functions
 ##############################################
 def register():
-    bpy.utils.register_class(PL_OT_playblast)
+    bpy.utils.register_class(PL_OT_player)
 
 
 def unregister():
-    bpy.utils.unregister_class(PL_OT_playblast)
+    bpy.utils.unregister_class(PL_OT_player)
