@@ -147,24 +147,54 @@ class PB_Prefs(bpy.types.AddonPreferences):
         description="Autoplay the video when processing is finished",
         default=True,
     )
+
+    pb_enable_context_menu: bpy.props.BoolProperty(
+        name="Context Menu",
+        description="Enable UI Buttons on Right Click (or W) Object Context Menu",
+        default=True,
+    )
+    pb_enable_context_menu_playblast: bpy.props.BoolProperty(
+        name="Playblast on Context Menu",
+        description="Enable Playblast Button on Right Click (or W) Object Context Menu",
+        default=True,
+    )
+    pb_enable_context_menu_replay: bpy.props.BoolProperty(
+        name="Replay on Context Menu",
+        description="Enable Replay Button on Right Click (or W) Object Context Menu",
+        default=False,
+    )
+    pb_enable_context_menu_turnaround: bpy.props.BoolProperty(
+        name="Playblast on Context Menu",
+        description="Enable Turnaround Camera Button on Right Click (or W) Object Context Menu",
+        default=False,
+    )
+
     pb_enable_3dview_menu: bpy.props.BoolProperty(
         name="Main Menu",
         description="Enable UI Button for appear on 3d View Main Menu",
         default=True,
     )
-    pb_enable_context_menu: bpy.props.BoolProperty(
-        name="Context Menu",
-        description="Enable UI Button on Right Click (or W) Object Context Menu",
+
+    pb_enable_3dview_menu_playblast: bpy.props.BoolProperty(
+        name="Playblast on Context Menu",
+        description="Enable Playblast Button on 3d View Main Menu",
         default=True,
     )
+    pb_enable_3dview_menu_replay: bpy.props.BoolProperty(
+        name="Replay on Context Menu",
+        description="Enable Replay Button on 3d View Main Menu",
+        default=True,
+    )
+
+    pb_icon_only: bpy.props.BoolProperty(
+        name="Icon Only",
+        description='Hide text on Main Menu Button',
+        default=True,
+    )
+
     pb_enable_add_menu: bpy.props.BoolProperty(
         name="Add Menu (Only for Turnaround Camera)",
         description="Enable UI Button on Add Menu (Shift A)",
-        default=True,
-    )
-    pb_icon_only: bpy.props.BoolProperty(
-        name="Icon Only",
-        description='Hide the word "Playblast" on Main Menu Button',
         default=True,
     )
 
@@ -178,86 +208,102 @@ class PB_Prefs(bpy.types.AddonPreferences):
 
         prefs = context.preferences.addons[__package__].preferences
 
-        box = layout.box()
-
-        box.label(text="Output", icon="FILE_FOLDER")
+        layout.label(text="Output", icon="FILE_FOLDER")
 
         # Folder
-        box.prop(self, "pb_output_options", text="Folder")
+        layout.prop(self, "pb_output_options", text="Folder")
 
         # If options is system folder, choose path
         if prefs.pb_output_options == 'SYSTEM_FOLDER':
-            box.prop(self, "pb_system_folder")
+            layout.prop(self, "pb_system_folder")
 
         # Subfolder
-        row = box.row()
+        row = layout.row()
         row.prop(self, "pb_subfolder")
         # If subfolder is disable, disable label edition
         if prefs.pb_subfolder:
             row.prop(self, "pb_subfolder_name", text="")
-        box.separator()
+        layout.separator()
 
         # Set prefix
-        row = box.row()
+        row = layout.row()
         row.prop(self, "pb_prefix_options", text="Name Prefix")
         if prefs.pb_prefix_options == 'CUSTOM_PREFIX':
             row.prop(self, "pb_custom_prefix", text="")
 
         if prefs.pb_prefix_options != 'NONE':
-            row = box.row()
+            row = layout.row()
             row.prop(self, "pb_separator", text="Separator")
             row.label(text="")
-        box.separator()
+        layout.separator()
 
-        box.label(text="Video Settings", icon="FILE_MOVIE")
+        layout.label(text="Video Settings", icon="FILE_MOVIE")
         # Set format
-        box.prop(self, "pb_format")
+        layout.prop(self, "pb_format")
         # If format is FFMPEG, set container and audio
         if prefs.pb_format == 'FFMPEG':
-            box.prop(self, "pb_container")
-            box.prop(self, "pb_video_codec")
-            box.prop(self, "pb_gop")
-            box.prop(self, "pb_audio")
-        box.separator()
+            layout.prop(self, "pb_container")
+            layout.prop(self, "pb_video_codec")
+            layout.prop(self, "pb_gop")
+            layout.prop(self, "pb_audio")
+        layout.separator()
 
         # Set resolution
-        row = box.row()
+        row = layout.row()
         row.prop(self, "pb_resize_method")
         if prefs.pb_resize_method == 'PERCENTAGE':
             row.prop(self, "pb_resize_percentage", text="")
-            box.separator()
+            layout.separator()
         elif prefs.pb_resize_method == 'MAX_HEIGHT':
             row.prop(self, "pb_resize_max_height", text="")
-            box.separator()
+            layout.separator()
         else:
             pass
 
-        row = box.row()
+        row = layout.row()
         # Enable Stamp
         row.prop(self, "pb_stamp")
         if prefs.pb_stamp:
             row.prop(self, "pb_stamp_font_size", text="Font Size")
         # Show Environment
-        box.prop(self, "pb_show_environment")
-        row = box.row()
+        layout.prop(self, "pb_show_environment")
+        row = layout.row()
         row.prop(self, "pb_overlays")
-        box.separator()
+        layout.separator()
 
-        box.label(text="Show UI Buttons", icon='SHADERFX')
+        
+        layout.label(text="Show UI Buttons", icon='SHADERFX')
         # Enable Button on Context
-        box.prop(self, "pb_enable_context_menu")
-        row = box.row()
-        # Enable Button on 3dview Menu
-        row.prop(self, "pb_enable_3dview_menu")
-        if prefs.pb_enable_3dview_menu:
-            row.prop(self, "pb_icon_only")
-        box.prop(self, "pb_enable_add_menu")
-        box.separator()
+        row = layout.row()
+        row.prop(self, "pb_enable_context_menu")
+        if prefs.pb_enable_context_menu:  
+            box = row.box()
+            box.prop(self, "pb_enable_context_menu_playblast", text="Playblast")
+            box.prop(self, "pb_enable_context_menu_replay", text="Replay")
+            box.prop(self, "pb_enable_context_menu_turnaround", text="Turnaround Camera") 
+        layout.separator()
 
-        box.label(text="Behavior", icon='AUTO')
+        row = layout.row()
+        row.prop(self, "pb_enable_3dview_menu")
+        if prefs.pb_enable_3dview_menu:  
+            col = row.column()
+            box = col.box()
+            box.prop(self, "pb_enable_3dview_menu_playblast", text="Playblast")
+            box.prop(self, "pb_enable_3dview_menu_replay", text="Replay")
+        if prefs.pb_enable_3dview_menu:  
+            # col = row.column()
+            col.prop(self, "pb_icon_only", text="Hide text on buttons")
+        layout.separator()
+
+        # Enable Button on Add Menu
+        layout.prop(self, "pb_enable_add_menu")
+        layout.separator()
+
+        layout.label(text="Behavior", icon='AUTO')
         # Enable Autoplay
-        box.prop(self, "pb_autoplay")
-        box.separator()
+        layout.prop(self, "pb_autoplay")
+        layout.separator()
+
 
 
 ####################################

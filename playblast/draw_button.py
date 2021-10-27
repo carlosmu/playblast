@@ -13,11 +13,15 @@ def playblast_ui_main_menu(self, context):
     layout.separator()
     if prefs.pb_enable_3dview_menu:
         if prefs.pb_icon_only:
-            layout.operator("playblast.playblast", icon='FILE_MOVIE', text="")
-            layout.operator("playblast.player", icon='PLAY', text="")
+            if prefs.pb_enable_3dview_menu_playblast:
+                layout.operator("playblast.playblast", icon='FILE_MOVIE', text="")
+            if prefs.pb_enable_3dview_menu_replay:
+                layout.operator("playblast.player", icon='PLAY', text="")
         else:
-            layout.operator("playblast.playblast", icon='FILE_MOVIE')
-            layout.operator("playblast.player", icon='PLAY')
+            if prefs.pb_enable_3dview_menu_playblast:
+                layout.operator("playblast.playblast", icon='FILE_MOVIE')
+            if prefs.pb_enable_3dview_menu_replay:
+                layout.operator("playblast.player", icon='PLAY')
 
 ##############################################
 # CONTEXT MENU BUTTON
@@ -31,11 +35,13 @@ def playblast_ui_context_menu(self, context):
     layout = self.layout
     if prefs.pb_enable_context_menu:
         layout.separator()
-        layout.operator("playblast.playblast", icon='FILE_MOVIE')
-        layout.operator("playblast.player", icon='PLAY')
-        layout.operator_context = "INVOKE_DEFAULT"  # Used for display popup on creation
-        layout.operator("playblast.turnaround_camera",
-                        icon='CON_CAMERASOLVER', text="Add Turnaround Camera")
+        if prefs.pb_enable_context_menu_playblast:
+            layout.operator("playblast.playblast", icon='FILE_MOVIE')
+        if prefs.pb_enable_context_menu_replay:
+            layout.operator("playblast.player", icon='PLAY')
+        if prefs.pb_enable_context_menu_turnaround:
+            layout.operator_context = "INVOKE_DEFAULT"  # Used for display popup on creation
+            layout.operator("playblast.turnaround_camera", icon='CON_CAMERASOLVER', text="Add Turnaround Camera")
 
 ##############################################
 # ADD OBJECT MENU BUTTON
