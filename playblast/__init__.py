@@ -19,6 +19,7 @@ from . import draw_button
 from . import op_playblast
 from . import op_player
 from . import op_turnaround_camera
+from . import op_copy_path
 from . import user_prefs
 from . import keymap
 
@@ -45,6 +46,7 @@ def register():
     op_playblast.register()
     op_player.register()
     op_turnaround_camera.register()
+    op_copy_path.register()
     user_prefs.register()
     keymap.register()
 
@@ -54,5 +56,6 @@ def unregister():
     op_playblast.unregister()
     op_player.unregister()
     op_turnaround_camera.unregister()
+    op_copy_path.unregister()
     user_prefs.unregister()
     keymap.unregister()
