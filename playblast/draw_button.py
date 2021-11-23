@@ -17,13 +17,15 @@ def playblast_ui_main_menu(self, context):
                 layout.operator("playblast.playblast", icon='FILE_MOVIE', text="")
             if prefs.pb_enable_3dview_menu_replay:
                 layout.operator("playblast.player", icon='PLAY', text="")
-            layout.operator("playblast.copy_path", icon='FILEBROWSER', text="")
+            if prefs.pb_enable_3dview_menu_filebrowser:
+                layout.operator("playblast.open_filebrowser", icon='FILEBROWSER', text="")
         else:
             if prefs.pb_enable_3dview_menu_playblast:
                 layout.operator("playblast.playblast", icon='FILE_MOVIE')
             if prefs.pb_enable_3dview_menu_replay:
                 layout.operator("playblast.player", icon='PLAY')
-            layout.operator("playblast.copy_path", icon='FILEBROWSER')
+            if prefs.pb_enable_3dview_menu_filebrowser:
+                layout.operator("playblast.open_filebrowser", icon='FILEBROWSER')
 
 ##############################################
 # CONTEXT MENU BUTTON
@@ -41,7 +43,8 @@ def playblast_ui_context_menu(self, context):
             layout.operator("playblast.playblast", icon='FILE_MOVIE')
         if prefs.pb_enable_context_menu_replay:
             layout.operator("playblast.player", icon='PLAY')
-        layout.operator("playblast.copy_path", icon='FILEBROWSER')
+        if prefs.pb_enable_context_menu_filebrowser:
+            layout.operator("playblast.open_filebrowser", icon='FILEBROWSER')
         if prefs.pb_enable_context_menu_turnaround:
             layout.operator_context = "INVOKE_DEFAULT"  # Used for display popup on creation
             layout.operator("playblast.turnaround_camera", icon='CON_CAMERASOLVER', text="Add Turnaround Camera")

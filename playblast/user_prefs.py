@@ -163,6 +163,11 @@ class PB_Prefs(bpy.types.AddonPreferences):
         description="Enable Replay Button on Right Click (or W) Object Context Menu",
         default=False,
     )
+    pb_enable_context_menu_filebrowser: bpy.props.BoolProperty(
+        name="Filebrowser button on Context Menu",
+        description="Enable Filebrowser Button on Right Click (or W) Object Context Menu",
+        default=True,
+    )
     pb_enable_context_menu_turnaround: bpy.props.BoolProperty(
         name="Playblast on Context Menu",
         description="Enable Turnaround Camera Button on Right Click (or W) Object Context Menu",
@@ -183,6 +188,11 @@ class PB_Prefs(bpy.types.AddonPreferences):
     pb_enable_3dview_menu_replay: bpy.props.BoolProperty(
         name="Replay on Context Menu",
         description="Enable Replay Button on 3d View Main Menu",
+        default=True,
+    )
+    pb_enable_3dview_menu_filebrowser: bpy.props.BoolProperty(
+        name="Filebrowser on Context Menu",
+        description="Enable Filebrowser Button on 3d View Main Menu",
         default=True,
     )
 
@@ -280,6 +290,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
             box = row.box()
             box.prop(self, "pb_enable_context_menu_playblast", text="Playblast")
             box.prop(self, "pb_enable_context_menu_replay", text="Replay")
+            box.prop(self, "pb_enable_context_menu_filebrowser", text="File browser")
             box.prop(self, "pb_enable_context_menu_turnaround", text="Turnaround Camera") 
         layout.separator()
 
@@ -290,6 +301,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
             box = col.box()
             box.prop(self, "pb_enable_3dview_menu_playblast", text="Playblast")
             box.prop(self, "pb_enable_3dview_menu_replay", text="Replay")
+            box.prop(self, "pb_enable_3dview_menu_filebrowser", text="File browser")
         if prefs.pb_enable_3dview_menu:  
             # col = row.column()
             col.prop(self, "pb_icon_only", text="Hide text on buttons")
