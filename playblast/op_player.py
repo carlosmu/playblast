@@ -81,8 +81,25 @@ class PL_OT_player(bpy.types.Operator):
         file_stamp_font_size = bpy.data.scenes[file_scene].render.stamp_font_size
         # Film Transparent
         file_transparent = bpy.data.scenes[file_scene].render.film_transparent
-        file_overlays = bpy.context.space_data.overlay.show_overlays  # Overlays
-        file_bone_overlays = bpy.context.space_data.overlay.show_bones  # Bone overlays
+        # Overlays
+        file_overlays = bpy.context.space_data.overlay.show_overlays
+        file_bone_overlays = bpy.context.space_data.overlay.show_bones
+        file_extras_olverlays = bpy.context.space_data.overlay.show_extras
+        file_floor_overlays = bpy.context.space_data.overlay.show_floor
+        file_axis_x_overlays = bpy.context.space_data.overlay.show_axis_x
+        file_axis_y_overlay = bpy.context.space_data.overlay.show_axis_y
+        file_axis_z_olverlay = bpy.context.space_data.overlay.show_axis_z
+        file_text_overlay = bpy.context.space_data.overlay.show_text
+        file_stats_overlay = bpy.context.space_data.overlay.show_stats
+        file_cursor_overlay = bpy.context.space_data.overlay.show_cursor
+        file_annotation_overlay = bpy.context.space_data.overlay.show_annotation
+        file_relationship_lines_overlay = bpy.context.space_data.overlay.show_relationship_lines
+        file_outline_selected_overlay = bpy.context.space_data.overlay.show_outline_selected
+        file_motion_paths_overlay = bpy.context.space_data.overlay.show_motion_paths
+        file_object_origins_overlay = bpy.context.space_data.overlay.show_object_origins
+        file_wireframes_overlay = bpy.context.space_data.overlay.show_wireframes
+        file_face_orientation_overlay = bpy.context.space_data.overlay.show_face_orientation
+        file_reconstruction_overlay = bpy.context.space_data.show_reconstruction
 
         # Get filename
         file_name = ""
@@ -172,6 +189,25 @@ class PL_OT_player(bpy.types.Operator):
         if prefs.pb_overlays == 'BONES':
             bpy.context.space_data.overlay.show_bones = False
 
+        if prefs.pb_overlays == 'ALL_EXCEPT_BACKGROUND_IMAGES':         
+            bpy.context.space_data.overlay.show_floor = False
+            bpy.context.space_data.overlay.show_axis_x = False
+            bpy.context.space_data.overlay.show_axis_y = False
+            bpy.context.space_data.overlay.show_axis_z = False
+            bpy.context.space_data.overlay.show_text = False
+            bpy.context.space_data.overlay.show_stats = False
+            bpy.context.space_data.overlay.show_cursor = False
+            bpy.context.space_data.overlay.show_annotation = False
+            bpy.context.space_data.overlay.show_bones = False
+            bpy.context.space_data.overlay.show_relationship_lines = False
+            bpy.context.space_data.overlay.show_outline_selected = False
+            bpy.context.space_data.overlay.show_extras = False
+            bpy.context.space_data.overlay.show_motion_paths = False
+            bpy.context.space_data.overlay.show_object_origins = False 
+            bpy.context.space_data.overlay.show_wireframes = False
+            bpy.context.space_data.overlay.show_face_orientation = False
+            bpy.context.space_data.show_reconstruction = False   
+
         # Try to create the video, but mainly protect the user's data
         # try:
         #     bpy.ops.render.opengl(animation=True)
@@ -208,8 +244,25 @@ class PL_OT_player(bpy.types.Operator):
             bpy.data.scenes[file_scene].render.use_stamp = file_stamp
             bpy.data.scenes[file_scene].render.stamp_font_size = file_stamp_font_size
             bpy.data.scenes[file_scene].render.film_transparent = file_transparent
+            # Overlays
             bpy.context.space_data.overlay.show_overlays = file_overlays
             bpy.context.space_data.overlay.show_bones = file_bone_overlays
+            bpy.context.space_data.overlay.show_extras = file_extras_olverlays
+            bpy.context.space_data.overlay.show_floor = file_floor_overlays
+            bpy.context.space_data.overlay.show_axis_x = file_axis_x_overlays
+            bpy.context.space_data.overlay.show_axis_y = file_axis_y_overlay
+            bpy.context.space_data.overlay.show_axis_z = file_axis_z_olverlay
+            bpy.context.space_data.overlay.show_text = file_text_overlay
+            bpy.context.space_data.overlay.show_stats = file_stats_overlay
+            bpy.context.space_data.overlay.show_cursor = file_cursor_overlay
+            bpy.context.space_data.overlay.show_annotation = file_annotation_overlay
+            bpy.context.space_data.overlay.show_relationship_lines = file_relationship_lines_overlay
+            bpy.context.space_data.overlay.show_outline_selected = file_outline_selected_overlay
+            bpy.context.space_data.overlay.show_motion_paths = file_motion_paths_overlay
+            bpy.context.space_data.overlay.show_object_origins = file_object_origins_overlay
+            bpy.context.space_data.overlay.show_wireframes = file_wireframes_overlay
+            bpy.context.space_data.overlay.show_face_orientation = file_face_orientation_overlay
+            bpy.context.space_data.show_reconstruction = file_reconstruction_overlay
 
     def force_divisible(self, number):
         if number % 2 != 0:

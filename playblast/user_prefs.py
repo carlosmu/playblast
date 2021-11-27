@@ -134,6 +134,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
         items=[
             ('ALL', 'Hide all overlays', ''),
             ('BONES', 'Hide only bones', ''),
+            ('ALL_EXCEPT_BACKGROUND_IMAGES', 'Hide all, except camera background images', ''),
             ('NONE', "Don't overwrite scene settings", '')],
         default="ALL",
     )
