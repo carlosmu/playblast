@@ -70,12 +70,12 @@ def playblast_ui_add_menu(self, context):
 # REGISTER/UNREGISTER
 ##############################################
 def register():
-    bpy.types.VIEW3D_MT_editor_menus.append(playblast_ui_main_menu)
+    # bpy.types.VIEW3D_MT_editor_menus.append(playblast_ui_main_menu)
     bpy.types.VIEW3D_MT_object_context_menu.append(playblast_ui_context_menu)
     bpy.types.VIEW3D_MT_add.append(playblast_ui_add_menu)
 
 
 def unregister():
-    bpy.types.VIEW3D_MT_editor_menus.remove(playblast_ui_main_menu)
+    # bpy.types.VIEW3D_MT_editor_menus.remove(playblast_ui_main_menu)
     bpy.types.VIEW3D_MT_object_context_menu.remove(playblast_ui_context_menu)
     bpy.types.VIEW3D_MT_add.remove(playblast_ui_add_menu)
