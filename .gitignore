@@ -6,5 +6,5 @@
 *.png~
 
 # Development releases
-*_[Aa]lpha*
-*_[Bb]eta*
+*[Aa]lpha*
+*[Bb]eta*

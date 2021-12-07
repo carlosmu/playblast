@@ -98,7 +98,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
         items=[
             ('PERCENTAGE', 'Resolution Percentage', ''),
             ('MAX_HEIGHT', 'Resolution Y (Max height)', ''),
-            ('NONE', 'Keep file resolution', '')],
+            ('NONE', 'Keep project resolution', '')],
         default='PERCENTAGE',
     )
     pb_resize_percentage: bpy.props.IntProperty(

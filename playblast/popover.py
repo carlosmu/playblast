@@ -15,6 +15,7 @@ class PL_PT_popover(bpy.types.Panel):
         prefs = context.preferences.addons[__package__].preferences # Import preferences        
 
         col = layout.column(align=True)
+
         col.scale_y = 1.3
 
         col.operator("playblast.playblast", icon='FILE_MOVIE')
@@ -24,14 +25,12 @@ class PL_PT_popover(bpy.types.Panel):
         row.operator("playblast.open_filebrowser", icon='FILEBROWSER', text="Open Folder")
 
         row = layout.row(align=True)
-        row.operator("playblast.open_preferences", icon='PREFERENCES')   
         row.prop(context.scene, "enable_overrides", icon='FILE_CACHE')
+        row.operator("playblast.open_preferences", icon='PREFERENCES')   
 
         if context.scene.enable_overrides: 
-            # Resolution overrides  
-            # col = layout.column(align=True)  
-            box = layout.box()  
-            row = box.row(align=True)
+            col = layout.column()  
+            row = col.row(align=True)
 
             row.prop(context.scene, "enable_resolution", text="") 
             if context.scene.enable_resolution:
@@ -45,9 +44,9 @@ class PL_PT_popover(bpy.types.Panel):
                     pass
             else:
                 row.label(text="Resolution Scale")
-            
+
             # Overlays overrides
-            row = box.row(align=True)
+            row = col.row(align=True)
             row.prop(context.scene, "enable_overlays", text="") 
             if context.scene.enable_overlays:
                 row.prop(context.scene, "hide_overlays", text="") 
@@ -55,7 +54,7 @@ class PL_PT_popover(bpy.types.Panel):
                 row.label(text="Overlays")
 
             # Folder overrides
-            row = box.row(align=True)
+            row = col.row(align=True)
             row.prop(context.scene, "enable_folder", text="") 
             if context.scene.enable_folder:
                 row.prop(context.scene, "custom_folder", text="") 
@@ -97,9 +96,9 @@ def register():
         name="Resize Method",
         description="Method for resize the current file resolution",
         items=[
-            ('PERCENTAGE', 'Percentage', ''),
-            ('MAX_HEIGHT', 'Max height', ''),
-            ('NONE', 'Keep file resolution', '')],
+            ('PERCENTAGE', 'Percentage', 'Scale resolution based on Percentage multiplier'),
+            ('MAX_HEIGHT', 'Max height', 'Scale resolution based on Max Height (Y Resolution)'),
+            ('NONE', 'Keep project resolution', "Don't scale resolution, mantain project settings")],
         default='PERCENTAGE',
     )
     bpy.types.Scene.override_resolution_percentage = bpy.props.IntProperty(
@@ -117,7 +116,7 @@ def register():
     )
     bpy.types.Scene.enable_overlays = bpy.props.BoolProperty(
         name="Overlays",
-        description="Enable resolution scale override",
+        description="Enable overlays override",
         default=False,
     )
     bpy.types.Scene.hide_overlays = bpy.props.EnumProperty(
