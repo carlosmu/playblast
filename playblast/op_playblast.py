@@ -7,19 +7,15 @@ import os
 #   MAIN OPERATOR
 ##############################################
 
-
 def warning(self, context):
     self.layout.label(text="Please save your blend file first")
-
 
 def codecs_error(self, context):
     self.layout.label(
         text="Set resolution divisible by 2, or choose another container/codec combination")
 
-
 def videoplayer_error(self, context):
     self.layout.label(text="Check your aplication videoplayer preferences")
-
 
 class PL_OT_playblast(bpy.types.Operator):
     """Quick viewport render of the animation framerange using the addon-preferences"""
@@ -145,30 +141,26 @@ class PL_OT_playblast(bpy.types.Operator):
 
         # Override Resolution Scale Method
         if context.scene.enable_resolution:
-            percentage = context.scene.override_resolution_percentage
-            max_height = context.scene.override_resolution_max_height
+            if context.scene.override_resize_method == 'PERCENTAGE':
+                divisor = 100 / context.scene.override_resolution_percentage
+            elif context.scene.override_resize_method == 'MAX_HEIGHT':
+                divisor = file_resolution_y / context.scene.override_resolution_max_height
+            else:
+                divisor = 1
         else:
-            percentage = prefs.pb_resize_percentage
-            max_height = prefs.pb_resize_max_height
-        
-        # Define resolution x and y, and force divisible
-        if prefs.pb_resize_method == 'PERCENTAGE':
-            # Simple division needed, for precision
-            divisor = 100 / percentage
-            resolution_x = int(file_resolution_x // divisor)
-            resolution_y = int(file_resolution_y // divisor)
-            resolution_x = self.force_divisible(resolution_x)
-            resolution_y = self.force_divisible(resolution_y)
-        elif prefs.pb_resize_method == 'MAX_HEIGHT':
-            # Simple division needed, for precision
-            divisor = file_resolution_y / max_height
-            resolution_x = int(file_resolution_x // divisor)
-            resolution_y = int(file_resolution_y // divisor)
-            resolution_x = self.force_divisible(resolution_x)
-            resolution_y = self.force_divisible(resolution_y)
-        else:
-            pass
+            if prefs.pb_resize_method == 'PERCENTAGE':
+                divisor = 100 / prefs.pb_resize_percentage
+            elif prefs.pb_resize_method == 'MAX_HEIGHT':
+                divisor = file_resolution_y / prefs.pb_resize_max_height
+            else:
+                divisor = 1
 
+        # Asign new resolution
+        resolution_x = int(file_resolution_x // divisor)
+        resolution_y = int(file_resolution_y // divisor)
+        resolution_x = self.force_divisible(resolution_x)
+        resolution_y = self.force_divisible(resolution_y)
+        
         #################################
         # Overwrite file settings
         #################################
@@ -182,11 +174,11 @@ class PL_OT_playblast(bpy.types.Operator):
             bpy.data.scenes[file_scene].render.ffmpeg.gopsize = prefs.pb_gop
             bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = prefs.pb_audio
 
-        if prefs.pb_resize_method == 'PERCENTAGE' or prefs.pb_resize_method == 'MAX_HEIGHT':
-            bpy.data.scenes[file_scene].render.resolution_x = resolution_x
-            bpy.data.scenes[file_scene].render.resolution_y = resolution_y
-            # Prevents unwanted resizing
-            bpy.data.scenes[file_scene].render.resolution_percentage = 100
+        # if prefs.pb_resize_method == 'PERCENTAGE' or prefs.pb_resize_method == 'MAX_HEIGHT':
+        bpy.data.scenes[file_scene].render.resolution_x = resolution_x
+        bpy.data.scenes[file_scene].render.resolution_y = resolution_y
+        # Prevents unwanted resizing
+        bpy.data.scenes[file_scene].render.resolution_percentage = 100
 
         bpy.data.scenes[file_scene].render.use_stamp = prefs.pb_stamp
         if prefs.pb_stamp:
@@ -298,7 +290,6 @@ class PL_OT_playblast(bpy.types.Operator):
 ##############################################
 def register():
     bpy.utils.register_class(PL_OT_playblast)
-
 
 def unregister():
     bpy.utils.unregister_class(PL_OT_playblast)

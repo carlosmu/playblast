@@ -25,24 +25,26 @@ class PL_PT_popover(bpy.types.Panel):
 
         row = layout.row(align=True)
         row.operator("playblast.open_preferences", icon='PREFERENCES')   
-        row.prop(context.scene, "enable_overrides", icon='DECORATE_OVERRIDE')
+        row.prop(context.scene, "enable_overrides", icon='FILE_CACHE')
 
         if context.scene.enable_overrides: 
-            # Resolution overrides    
+            # Resolution overrides  
+            # col = layout.column(align=True)  
             box = layout.box()  
-            if prefs.pb_resize_method != 'NONE':
-                row = box.row(align=True)
-                row.prop(context.scene, "enable_resolution", text="") 
+            row = box.row(align=True)
+
+            row.prop(context.scene, "enable_resolution", text="") 
+            if context.scene.enable_resolution:
+                row.prop(context.scene, "override_resize_method", text="") 
                 
-                if context.scene.enable_resolution:           
-                    if prefs.pb_resize_method == 'PERCENTAGE':
-                        row.prop(context.scene, "override_resolution_percentage")
-                    else:
-                        row.prop(context.scene, "override_resolution_max_height", text="Max px Height")
+                if context.scene.override_resize_method == 'PERCENTAGE':           
+                    row.prop(context.scene, "override_resolution_percentage", text="")
+                elif context.scene.override_resize_method == 'MAX_HEIGHT':
+                    row.prop(context.scene, "override_resolution_max_height", text="px")
                 else:
-                    row.label(text="Resize Scale")
+                    pass
             else:
-                box.label(text="Resize disabled on preferences", icon='INFO')
+                row.label(text="Resolution Scale")
             
             # Overlays overrides
             row = box.row(align=True)
@@ -82,14 +84,23 @@ def register():
     bpy.types.VIEW3D_MT_editor_menus.append(popover)
 
     bpy.types.Scene.enable_overrides = bpy.props.BoolProperty(
-        name="Override Prefs",
+        name="Quick Settings",
         description="Enable overrides for preferences",
         default=False,
     )
     bpy.types.Scene.enable_resolution = bpy.props.BoolProperty(
-        name="Resize Scale",
+        name="Resolution Scale",
         description="Enable resolution scale override",
         default=False,
+    )
+    bpy.types.Scene.override_resize_method = bpy.props.EnumProperty(
+        name="Resize Method",
+        description="Method for resize the current file resolution",
+        items=[
+            ('PERCENTAGE', 'Percentage', ''),
+            ('MAX_HEIGHT', 'Max height', ''),
+            ('NONE', 'Keep file resolution', '')],
+        default='PERCENTAGE',
     )
     bpy.types.Scene.override_resolution_percentage = bpy.props.IntProperty(
         name="Resolution Percentage",
@@ -137,6 +148,7 @@ def unregister():
 
     del bpy.types.Scene.enable_overrides
     del bpy.types.Scene.enable_resolution
+    del bpy.types.Scene.override_resize_method
     del bpy.types.Scene.override_resolution_percentage
     del bpy.types.Scene.override_resolution_max_height
     del bpy.types.Scene.enable_overlays
