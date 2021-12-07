@@ -42,13 +42,9 @@ class PL_PT_popover(bpy.types.Panel):
                 if context.scene.enable_resolution:           
                     row = box.row()
                     if prefs.pb_resize_method == 'PERCENTAGE':
-                        row.label(text="Percentage")
-                        row.scale_x = 2
-                        row.prop(context.scene, "override_resolution_percentage", text="")
+                        row.prop(context.scene, "override_resolution_percentage")
                     else:
-                        row.label(text="Max Height")
-                        row.scale_x = 2
-                        row.prop(context.scene, "override_resolution_max_height", text="")
+                        row.prop(context.scene, "override_resolution_max_height", text="Max px Height")
             else:
                 box.label(text="Resize Method are disabled", icon='INFO')
             
@@ -57,7 +53,7 @@ class PL_PT_popover(bpy.types.Panel):
             row = box.row()
             row.prop(context.scene, "enable_overlays") 
             if context.scene.enable_overlays:
-                row.scale_x = 1.5
+                row.scale_x = 1.7
                 row.prop(context.scene, "hide_overlays", text="") 
 
         
