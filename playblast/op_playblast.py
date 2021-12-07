@@ -120,25 +120,28 @@ class PL_OT_playblast(bpy.types.Operator):
         subfolder = ""
         subfolder = prefs.pb_subfolder_name + "/"
 
-        if prefs.pb_output_options == 'PROYECT_FOLDER':
-            if prefs.pb_subfolder:
-                output = "//" + subfolder
-            else:
-                output = "//"
-        elif prefs.pb_output_options == 'SYSTEM_FOLDER':
-            if prefs.pb_subfolder:
-                output = prefs.pb_system_folder + subfolder
-            else:
-                output = prefs.pb_system_folder
+        # Override Folder
+        if context.scene.enable_folder:
+            output = context.scene.custom_folder
         else:
-            if prefs.pb_subfolder:
-                output = file_output + subfolder
+            if prefs.pb_output_options == 'PROYECT_FOLDER':
+                if prefs.pb_subfolder:
+                    output = "//" + subfolder
+                else:
+                    output = "//"
+            elif prefs.pb_output_options == 'SYSTEM_FOLDER':
+                if prefs.pb_subfolder:
+                    output = prefs.pb_system_folder + subfolder
+                else:
+                    output = prefs.pb_system_folder
             else:
-                output = file_output
+                if prefs.pb_subfolder:
+                    output = file_output + subfolder
+                else:
+                    output = file_output
 
         # Add prefix to output
         output = output + prefix
-
 
         # Override Resolution Scale Method
         if context.scene.enable_resolution:

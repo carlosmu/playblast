@@ -1,6 +1,4 @@
 import bpy
-from bpy.types import Operator, AddonPreferences
-from bpy.props import StringProperty, IntProperty, FloatProperty, BoolProperty, EnumProperty
 
 ##############################################
 #    USER PREFERENCES
