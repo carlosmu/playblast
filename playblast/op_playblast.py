@@ -139,17 +139,26 @@ class PL_OT_playblast(bpy.types.Operator):
         # Add prefix to output
         output = output + prefix
 
+
+        # Override Resolution Scale Method
+        if context.scene.enable_resolution:
+            percentage = context.scene.override_resolution_percentage
+            max_height = context.scene.override_resolution_max_height
+        else:
+            percentage = prefs.pb_resize_percentage
+            max_height = prefs.pb_resize_max_height
+        
         # Define resolution x and y, and force divisible
         if prefs.pb_resize_method == 'PERCENTAGE':
             # Simple division needed, for precision
-            divisor = 100 / prefs.pb_resize_percentage
+            divisor = 100 / percentage
             resolution_x = int(file_resolution_x // divisor)
             resolution_y = int(file_resolution_y // divisor)
             resolution_x = self.force_divisible(resolution_x)
             resolution_y = self.force_divisible(resolution_y)
         elif prefs.pb_resize_method == 'MAX_HEIGHT':
             # Simple division needed, for precision
-            divisor = file_resolution_y / prefs.pb_resize_max_height
+            divisor = file_resolution_y / max_height
             resolution_x = int(file_resolution_x // divisor)
             resolution_y = int(file_resolution_y // divisor)
             resolution_x = self.force_divisible(resolution_x)
@@ -183,13 +192,20 @@ class PL_OT_playblast(bpy.types.Operator):
         if prefs.pb_show_environment:
             bpy.data.scenes[file_scene].render.film_transparent = False
 
-        if prefs.pb_overlays == 'ALL':
+        # Override Overlays
+        if context.scene.enable_overlays:
+            overlays = context.scene.hide_overlays
+        else:
+            overlays = prefs.pb_overlays
+
+        # Overlays settings
+        if overlays == 'ALL':
             bpy.context.space_data.overlay.show_overlays = False
 
-        if prefs.pb_overlays == 'BONES':
+        if overlays == 'BONES':
             bpy.context.space_data.overlay.show_bones = False
 
-        if prefs.pb_overlays == 'ALL_EXCEPT_BACKGROUND_IMAGES':         
+        if overlays == 'ALL_EXCEPT_BACKGROUND_IMAGES':         
             bpy.context.space_data.overlay.show_floor = False
             bpy.context.space_data.overlay.show_axis_x = False
             bpy.context.space_data.overlay.show_axis_y = False

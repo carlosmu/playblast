@@ -150,7 +150,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
     pb_enable_context_menu: bpy.props.BoolProperty(
         name="Context Menu",
         description="Enable UI Buttons on Right Click (or W) Object Context Menu",
-        default=True,
+        default=False,
     )
     pb_enable_context_menu_playblast: bpy.props.BoolProperty(
         name="Playblast on Context Menu",
