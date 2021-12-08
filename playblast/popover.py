@@ -30,8 +30,28 @@ class PL_PT_popover(bpy.types.Panel):
 
         if context.scene.enable_overrides: 
             col = layout.column()  
-            row = col.row(align=True)
 
+            # Version Number
+            row = col.row(align=True)
+            row.prop(context.scene, "enable_version", text="") 
+            if context.scene.enable_version:
+                row.label(text="Version number:")
+                
+                # Version numbering
+                version_number = str(context.scene.version_number)
+                version = f'v{version_number:0>3}'
+                row.scale_x = .5
+                row.label(text=version)
+                row.scale_x = 1
+
+                # Version buttons
+                row.operator("playblast.decrease_version", icon='REMOVE', text="") 
+                row.operator("playblast.increase_version", icon='ADD', text="") 
+            else:
+                row.label(text="Version number")
+
+            # Resolution Overrides
+            row = col.row(align=True)
             row.prop(context.scene, "enable_resolution", text="") 
             if context.scene.enable_resolution:
                 row.prop(context.scene, "override_resize_method", text="") 
@@ -60,7 +80,6 @@ class PL_PT_popover(bpy.types.Panel):
                 row.prop(context.scene, "custom_folder", text="") 
             else:
                 row.label(text="Folder Output")
-            layout.separator()
 
         layout.operator("playblast.turnaround_camera", icon='CON_CAMERASOLVER', text="Add Turnaround Camera")
 
@@ -140,6 +159,16 @@ def register():
         default="//",
         subtype='FILE_PATH',
     )
+    bpy.types.Scene.enable_version = bpy.props.BoolProperty(
+        name="Enable Version",
+        description="Enable custom version",
+        default=False,
+    )
+    bpy.types.Scene.version_number = bpy.props.IntProperty(
+        name="Custom Version",
+        description="Version for playblast files",
+        default=1,
+    )
 
 def unregister():
     bpy.utils.unregister_class(PL_PT_popover)
@@ -154,3 +183,5 @@ def unregister():
     del bpy.types.Scene.hide_overlays
     del bpy.types.Scene.enable_folder
     del bpy.types.Scene.custom_folder
+    del bpy.types.Scene.enable_version
+    del bpy.types.Scene.version_number

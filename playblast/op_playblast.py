@@ -102,6 +102,7 @@ class PL_OT_playblast(bpy.types.Operator):
         file_name = bpy.path.basename(bpy.data.filepath)
         file_name = os.path.splitext(file_name)[0]
 
+
         # Define Prefix
         prefix = ""
         if prefs.pb_prefix_options == 'FILE_NAME':
@@ -110,6 +111,14 @@ class PL_OT_playblast(bpy.types.Operator):
             prefix = prefs.pb_custom_prefix + prefs.pb_separator
         else:
             pass
+
+        # Custom Version
+        version_number = str(context.scene.version_number)
+        version = f'v{version_number:0>3}'
+        
+        # Apply version
+        if context.scene.enable_version:
+            prefix = prefix + version + prefs.pb_separator
 
         # Define Output Path
         output = ""

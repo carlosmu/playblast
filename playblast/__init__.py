@@ -21,6 +21,7 @@ from . import op_player
 from . import op_turnaround_camera
 from . import op_open_filebrowser
 from . import op_open_preferences
+from . import op_version_numbering
 from . import popover
 from . import user_prefs
 from . import keymap
@@ -29,7 +30,7 @@ bl_info = {
     "name": "Playblast",
     "author": "carlosmu <carlos.damian.munoz@gmail.com>",
     "blender": (2, 83, 0),
-    "version": (1, 2, 2),
+    "version": (1, 2, 3),
     "category": "Animation",
     "location": "3D View Main Menu and/or Right Click Context Menu",
     "description": "Improves viewport render animation user experience",
@@ -50,6 +51,7 @@ def register():
     op_turnaround_camera.register()
     op_open_filebrowser.register()
     op_open_preferences.register()
+    op_version_numbering.register()
     popover.register()
     user_prefs.register()
     keymap.register()
@@ -62,6 +64,7 @@ def unregister():
     op_turnaround_camera.unregister()
     op_open_filebrowser.unregister()
     op_open_preferences.unregister()
+    op_version_numbering.unregister()
     popover.unregister()
     user_prefs.unregister()
     keymap.unregister()
