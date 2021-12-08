@@ -115,6 +115,14 @@ class PL_OT_player(bpy.types.Operator):
         else:
             pass
 
+        # Custom Version
+        version_number = str(context.scene.version_number)
+        version = f'v{version_number:0>3}'
+        
+        # Apply version
+        if context.scene.enable_version:
+            prefix = prefix + version + prefs.pb_separator
+
         # Define Output Path
         output = ""
         subfolder = ""
