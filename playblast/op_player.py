@@ -120,8 +120,10 @@ class PL_OT_player(bpy.types.Operator):
         version = f'v{version_number:0>3}'
         
         # Apply version
-        if context.scene.enable_version:
-            prefix = prefix + version + prefs.pb_separator
+        if context.scene.enable_version and context.scene.enable_overrides:
+            name = prefix + version + prefs.pb_separator
+        else:
+            name = prefix
 
         # Define Output Path
         output = ""
@@ -129,7 +131,7 @@ class PL_OT_player(bpy.types.Operator):
         subfolder = prefs.pb_subfolder_name + "/"
 
         # Override Folder
-        if context.scene.enable_folder:
+        if context.scene.enable_folder and context.scene.enable_overrides:
             output = context.scene.custom_folder
         else:
             if prefs.pb_output_options == 'PROYECT_FOLDER':
@@ -148,8 +150,8 @@ class PL_OT_player(bpy.types.Operator):
                 else:
                     output = file_output
 
-        # Add prefix to output
-        output = output + prefix
+        # Add name to output
+        output = output + name
 
         # Define resolution x and y, and force divisible
         if prefs.pb_resize_method == 'PERCENTAGE':

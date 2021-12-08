@@ -80,7 +80,8 @@ class PL_PT_popover(bpy.types.Panel):
                 row.prop(context.scene, "custom_folder", text="") 
             else:
                 row.label(text="Folder Output")
-
+            layout.separator()
+            
         layout.operator("playblast.turnaround_camera", icon='CON_CAMERASOLVER', text="Add Turnaround Camera")
 
         

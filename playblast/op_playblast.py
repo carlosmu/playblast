@@ -117,8 +117,10 @@ class PL_OT_playblast(bpy.types.Operator):
         version = f'v{version_number:0>3}'
         
         # Apply version
-        if context.scene.enable_version:
-            prefix = prefix + version + prefs.pb_separator
+        if context.scene.enable_version and context.scene.enable_overrides:
+            name = prefix + version + prefs.pb_separator
+        else:
+            name = prefix
 
         # Define Output Path
         output = ""
@@ -126,7 +128,7 @@ class PL_OT_playblast(bpy.types.Operator):
         subfolder = prefs.pb_subfolder_name + "/"
 
         # Override Folder
-        if context.scene.enable_folder:
+        if context.scene.enable_folder and context.scene.enable_overrides:
             output = context.scene.custom_folder
         else:
             if prefs.pb_output_options == 'PROYECT_FOLDER':
@@ -145,11 +147,11 @@ class PL_OT_playblast(bpy.types.Operator):
                 else:
                     output = file_output
 
-        # Add prefix to output
-        output = output + prefix
+        # Add name to output
+        output = output + name
 
         # Override Resolution Scale Method
-        if context.scene.enable_resolution:
+        if context.scene.enable_resolution and context.scene.enable_overrides:
             if context.scene.override_resize_method == 'PERCENTAGE':
                 divisor = 100 / context.scene.override_resolution_percentage
             elif context.scene.override_resize_method == 'MAX_HEIGHT':
@@ -197,7 +199,7 @@ class PL_OT_playblast(bpy.types.Operator):
             bpy.data.scenes[file_scene].render.film_transparent = False
 
         # Override Overlays
-        if context.scene.enable_overlays:
+        if context.scene.enable_overlays and context.scene.enable_overrides:
             overlays = context.scene.hide_overlays
         else:
             overlays = prefs.pb_overlays
