@@ -51,6 +51,11 @@ class PB_Prefs(bpy.types.AddonPreferences):
         description="Set a custom prefix separator (use only system supported characters, for example underscore, middle dash, or dot)",
         default="-",
     )
+    pb_framerange: bpy.props.BoolProperty(
+        name="Framerange",
+        description="Print Framerange in Playblast Name",
+        default=False,
+    )
     pb_format: bpy.props.EnumProperty(
         name="File Format",
         description="File format to save the playblast",
@@ -210,6 +215,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
             row = box.row()
             row.prop(self, "pb_separator", text="Separator")
             row.label(text="")
+        box.prop(self, "pb_framerange", text="Use framerange as suffix")
         box.separator()
 
 

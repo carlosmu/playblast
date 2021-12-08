@@ -49,6 +49,8 @@ class PL_OT_playblast(bpy.types.Operator):
         #################################
         # Save current file render settings
         #################################
+        file_extension = bpy.context.scene.render.use_file_extension
+
         file_scene = bpy.context.scene.name_full  # Scene Name
         # Output path
         file_output = bpy.data.scenes[file_scene].render.filepath
@@ -106,21 +108,42 @@ class PL_OT_playblast(bpy.types.Operator):
         # Define Prefix
         prefix = ""
         if prefs.pb_prefix_options == 'FILE_NAME':
-            prefix = file_name + prefs.pb_separator
+            prefix = file_name
         elif prefs.pb_prefix_options == 'CUSTOM_PREFIX':
-            prefix = prefs.pb_custom_prefix + prefs.pb_separator
+            prefix = prefs.pb_custom_prefix
         else:
             pass
 
+        # Framerange
+        framerange = f'{prefs.pb_separator}{context.scene.frame_start:0>4}{prefs.pb_separator}{context.scene.frame_end:0>4}'
+
+        if prefs.pb_framerange:
+            name = prefix + framerange
+        else:
+            name = prefix
+
         # Custom Version
         version_number = str(context.scene.version_number)
-        version = f'v{version_number:0>3}'
+        version = f'{prefs.pb_separator}v{version_number:0>3}'
         
         # Apply version
         if context.scene.enable_version and context.scene.enable_overrides:
-            name = prefix + version + prefs.pb_separator
+            name = name + version
+
+        # Extension
+        bpy.context.scene.render.use_file_extension = False
+
+        if prefs.pb_container == 'MPEG4':
+            extension = ".mp4"
+        elif prefs.pb_container == 'AVI':
+            extension = ".avi"
+        elif prefs.pb_container == 'QUICKTIME':
+            extension = ".mov"
         else:
-            name = prefix
+            extension = ".mkv"
+            
+        name = name + extension        
+        
 
         # Define Output Path
         output = ""
@@ -246,6 +269,7 @@ class PL_OT_playblast(bpy.types.Operator):
             #################################
             # Recover previous file settings
             #################################
+            bpy.context.scene.render.use_file_extension = file_extension
             bpy.data.scenes[file_scene].render.filepath = file_output
             bpy.data.scenes[file_scene].render.image_settings.file_format = file_format
             if file_format == 'FFMPEG':
