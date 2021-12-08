@@ -35,16 +35,15 @@ class PL_PT_popover(bpy.types.Panel):
             row = col.row(align=True)
             row.prop(context.scene, "enable_version", text="") 
             if context.scene.enable_version:
-                row.label(text="Version number:")
+                row.label(text="Version:")
                 
                 # Version numbering
                 version_number = str(context.scene.version_number)
                 version = f'v{version_number:0>3}'
-                row.scale_x = .5
                 row.label(text=version)
-                row.scale_x = 1
 
                 # Version buttons
+                row.operator("playblast.recover_version", icon='RECOVER_LAST', text="") 
                 row.operator("playblast.decrease_version", icon='REMOVE', text="") 
                 row.operator("playblast.increase_version", icon='ADD', text="") 
             else:
@@ -169,6 +168,7 @@ def register():
         name="Custom Version",
         description="Version for playblast files",
         default=1,
+        min = 0
     )
 
 def unregister():
