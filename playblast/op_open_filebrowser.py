@@ -40,9 +40,9 @@ class PL_OT_open_filebrowser(bpy.types.Operator):
             # Define Prefix
             prefix = ""
             if prefs.pb_prefix_options == 'FILE_NAME':
-                prefix = file_name + prefs.pb_separator
+                prefix = file_name
             elif prefs.pb_prefix_options == 'CUSTOM_PREFIX':
-                prefix = prefs.pb_custom_prefix + prefs.pb_separator
+                prefix = prefs.pb_custom_prefix
             else:
                 pass
 
