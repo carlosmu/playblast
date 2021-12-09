@@ -7,22 +7,18 @@ import os
 #   MAIN OPERATOR
 ##############################################
 
-
 def warning(self, context):
     self.layout.label(text="Please save your blend file first")
-
-
+###### PLAYER COMMENTED CODE ######
 # def codecs_error(self, context):
 #     self.layout.label(
 #         text="Set resolution divisible by 2, or choose another container/codec combination")
 
-
 def videoplayer_error(self, context):
     self.layout.label(text="Check your aplication videoplayer preferences")
 
-
 class PL_OT_player(bpy.types.Operator):
-    """Plays the last playblast that matches the same parameters (render settings, framerange, etc)"""
+    """Plays the last playblast matching the current settings (output, version, etc.)"""
     bl_idname = "playblast.player"
     bl_label = "Replay"
     bl_options = {'REGISTER', 'UNDO'}
@@ -53,6 +49,8 @@ class PL_OT_player(bpy.types.Operator):
         #################################
         # Save current file render settings
         #################################
+        file_extension = bpy.context.scene.render.use_file_extension
+
         file_scene = bpy.context.scene.name_full  # Scene Name
         # Output path
         file_output = bpy.data.scenes[file_scene].render.filepath
@@ -90,7 +88,8 @@ class PL_OT_player(bpy.types.Operator):
         file_axis_y_overlay = bpy.context.space_data.overlay.show_axis_y
         file_axis_z_olverlay = bpy.context.space_data.overlay.show_axis_z
         file_text_overlay = bpy.context.space_data.overlay.show_text
-        file_stats_overlay = bpy.context.space_data.overlay.show_stats
+        if bpy.app.version >= (2, 90, 0):
+            file_stats_overlay = bpy.context.space_data.overlay.show_stats
         file_cursor_overlay = bpy.context.space_data.overlay.show_cursor
         file_annotation_overlay = bpy.context.space_data.overlay.show_annotation
         file_relationship_lines_overlay = bpy.context.space_data.overlay.show_relationship_lines
@@ -106,24 +105,46 @@ class PL_OT_player(bpy.types.Operator):
         file_name = bpy.path.basename(bpy.data.filepath)
         file_name = os.path.splitext(file_name)[0]
 
+
         # Define Prefix
         prefix = ""
         if prefs.pb_prefix_options == 'FILE_NAME':
-            prefix = file_name + prefs.pb_separator
+            prefix = file_name
         elif prefs.pb_prefix_options == 'CUSTOM_PREFIX':
-            prefix = prefs.pb_custom_prefix + prefs.pb_separator
+            prefix = prefs.pb_custom_prefix
         else:
             pass
 
+        # Framerange
+        framerange = f'{prefs.pb_separator}{context.scene.frame_start:0>4}{prefs.pb_separator}{context.scene.frame_end:0>4}'
+
+        if prefs.pb_framerange:
+            name = prefix + framerange
+        else:
+            name = prefix
+
         # Custom Version
         version_number = str(context.scene.version_number)
-        version = f'v{version_number:0>3}'
+        version = f'{prefs.pb_separator}v{version_number:0>3}'
         
         # Apply version
         if context.scene.enable_version and context.scene.enable_overrides:
-            name = prefix + version + prefs.pb_separator
+            name = name + version
+
+        # Extension
+        bpy.context.scene.render.use_file_extension = False
+
+        if prefs.pb_container == 'MPEG4':
+            extension = ".mp4"
+        elif prefs.pb_container == 'AVI':
+            extension = ".avi"
+        elif prefs.pb_container == 'QUICKTIME':
+            extension = ".mov"
         else:
-            name = prefix
+            extension = ".mkv"
+            
+        name = name + extension        
+        
 
         # Define Output Path
         output = ""
@@ -153,24 +174,28 @@ class PL_OT_player(bpy.types.Operator):
         # Add name to output
         output = output + name
 
-        # Define resolution x and y, and force divisible
-        if prefs.pb_resize_method == 'PERCENTAGE':
-            # Simple division needed, for precision
-            divisor = 100 / prefs.pb_resize_percentage
-            resolution_x = int(file_resolution_x // divisor)
-            resolution_y = int(file_resolution_y // divisor)
-            resolution_x = self.force_divisible(resolution_x)
-            resolution_y = self.force_divisible(resolution_y)
-        elif prefs.pb_resize_method == 'MAX_HEIGHT':
-            # Simple division needed, for precision
-            divisor = file_resolution_y / prefs.pb_resize_max_height
-            resolution_x = int(file_resolution_x // divisor)
-            resolution_y = int(file_resolution_y // divisor)
-            resolution_x = self.force_divisible(resolution_x)
-            resolution_y = self.force_divisible(resolution_y)
+        # Override Resolution Scale Method
+        if context.scene.enable_resolution and context.scene.enable_overrides:
+            if context.scene.override_resize_method == 'PERCENTAGE':
+                divisor = 100 / context.scene.override_resolution_percentage
+            elif context.scene.override_resize_method == 'MAX_HEIGHT':
+                divisor = file_resolution_y / context.scene.override_resolution_max_height
+            else:
+                divisor = 1
         else:
-            pass
+            if prefs.pb_resize_method == 'PERCENTAGE':
+                divisor = 100 / prefs.pb_resize_percentage
+            elif prefs.pb_resize_method == 'MAX_HEIGHT':
+                divisor = file_resolution_y / prefs.pb_resize_max_height
+            else:
+                divisor = 1
 
+        # Asign new resolution
+        resolution_x = int(file_resolution_x // divisor)
+        resolution_y = int(file_resolution_y // divisor)
+        resolution_x = self.force_divisible(resolution_x)
+        resolution_y = self.force_divisible(resolution_y)
+        
         #################################
         # Overwrite file settings
         #################################
@@ -184,11 +209,11 @@ class PL_OT_player(bpy.types.Operator):
             bpy.data.scenes[file_scene].render.ffmpeg.gopsize = prefs.pb_gop
             bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = prefs.pb_audio
 
-        if prefs.pb_resize_method == 'PERCENTAGE' or prefs.pb_resize_method == 'MAX_HEIGHT':
-            bpy.data.scenes[file_scene].render.resolution_x = resolution_x
-            bpy.data.scenes[file_scene].render.resolution_y = resolution_y
-            # Prevents unwanted resizing
-            bpy.data.scenes[file_scene].render.resolution_percentage = 100
+        # if prefs.pb_resize_method == 'PERCENTAGE' or prefs.pb_resize_method == 'MAX_HEIGHT':
+        bpy.data.scenes[file_scene].render.resolution_x = resolution_x
+        bpy.data.scenes[file_scene].render.resolution_y = resolution_y
+        # Prevents unwanted resizing
+        bpy.data.scenes[file_scene].render.resolution_percentage = 100
 
         bpy.data.scenes[file_scene].render.use_stamp = prefs.pb_stamp
         if prefs.pb_stamp:
@@ -197,19 +222,27 @@ class PL_OT_player(bpy.types.Operator):
         if prefs.pb_show_environment:
             bpy.data.scenes[file_scene].render.film_transparent = False
 
-        if prefs.pb_overlays == 'ALL':
+        # Override Overlays
+        if context.scene.enable_overlays and context.scene.enable_overrides:
+            overlays = context.scene.hide_overlays
+        else:
+            overlays = prefs.pb_overlays
+
+        # Overlays settings
+        if overlays == 'ALL':
             bpy.context.space_data.overlay.show_overlays = False
 
-        if prefs.pb_overlays == 'BONES':
+        if overlays == 'BONES':
             bpy.context.space_data.overlay.show_bones = False
 
-        if prefs.pb_overlays == 'ALL_EXCEPT_BACKGROUND_IMAGES':         
+        if overlays == 'ALL_EXCEPT_BACKGROUND_IMAGES':         
             bpy.context.space_data.overlay.show_floor = False
             bpy.context.space_data.overlay.show_axis_x = False
             bpy.context.space_data.overlay.show_axis_y = False
             bpy.context.space_data.overlay.show_axis_z = False
             bpy.context.space_data.overlay.show_text = False
-            bpy.context.space_data.overlay.show_stats = False
+            if bpy.app.version >= (2, 90, 0):
+                bpy.context.space_data.overlay.show_stats = False
             bpy.context.space_data.overlay.show_cursor = False
             bpy.context.space_data.overlay.show_annotation = False
             bpy.context.space_data.overlay.show_bones = False
@@ -220,8 +253,8 @@ class PL_OT_player(bpy.types.Operator):
             bpy.context.space_data.overlay.show_object_origins = False 
             bpy.context.space_data.overlay.show_wireframes = False
             bpy.context.space_data.overlay.show_face_orientation = False
-            bpy.context.space_data.show_reconstruction = False   
-
+            bpy.context.space_data.show_reconstruction = False     
+        ###### PLAYER COMMENTED CODE ######
         # Try to create the video, but mainly protect the user's data
         # try:
         #     bpy.ops.render.opengl(animation=True)
@@ -229,11 +262,13 @@ class PL_OT_player(bpy.types.Operator):
         #         try:
         #             bpy.ops.render.play_rendered_anim()
         #         except:
-        #             context.window_manager.popup_menu(videoplayer_error, title="Video player error", icon='ERROR')
+        #             context.window_manager.popup_menu(
+        #                 videoplayer_error, title="Video player error", icon='ERROR')
         # except:
-        #     context.window_manager.popup_menu(codecs_error, title="Codecs error", icon='ERROR')
-
-        # Try to replay vide, but mainly protect the user's data
+        #     context.window_manager.popup_menu(
+        #         codecs_error, title="Codecs error", icon='ERROR')
+        ##############################################################
+        #### Try to replay video, but mainly protect the user's data
         try:
             bpy.ops.render.play_rendered_anim()
         except:
@@ -243,6 +278,7 @@ class PL_OT_player(bpy.types.Operator):
             #################################
             # Recover previous file settings
             #################################
+            bpy.context.scene.render.use_file_extension = file_extension
             bpy.data.scenes[file_scene].render.filepath = file_output
             bpy.data.scenes[file_scene].render.image_settings.file_format = file_format
             if file_format == 'FFMPEG':
@@ -267,7 +303,8 @@ class PL_OT_player(bpy.types.Operator):
             bpy.context.space_data.overlay.show_axis_y = file_axis_y_overlay
             bpy.context.space_data.overlay.show_axis_z = file_axis_z_olverlay
             bpy.context.space_data.overlay.show_text = file_text_overlay
-            bpy.context.space_data.overlay.show_stats = file_stats_overlay
+            if bpy.app.version >= (2, 90, 0):
+                bpy.context.space_data.overlay.show_stats = file_stats_overlay
             bpy.context.space_data.overlay.show_cursor = file_cursor_overlay
             bpy.context.space_data.overlay.show_annotation = file_annotation_overlay
             bpy.context.space_data.overlay.show_relationship_lines = file_relationship_lines_overlay
@@ -298,7 +335,6 @@ class PL_OT_player(bpy.types.Operator):
 ##############################################
 def register():
     bpy.utils.register_class(PL_OT_player)
-
 
 def unregister():
     bpy.utils.unregister_class(PL_OT_player)

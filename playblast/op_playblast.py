@@ -88,7 +88,8 @@ class PL_OT_playblast(bpy.types.Operator):
         file_axis_y_overlay = bpy.context.space_data.overlay.show_axis_y
         file_axis_z_olverlay = bpy.context.space_data.overlay.show_axis_z
         file_text_overlay = bpy.context.space_data.overlay.show_text
-        file_stats_overlay = bpy.context.space_data.overlay.show_stats
+        if bpy.app.version >= (2, 90, 0):
+            file_stats_overlay = bpy.context.space_data.overlay.show_stats
         file_cursor_overlay = bpy.context.space_data.overlay.show_cursor
         file_annotation_overlay = bpy.context.space_data.overlay.show_annotation
         file_relationship_lines_overlay = bpy.context.space_data.overlay.show_relationship_lines
@@ -240,7 +241,8 @@ class PL_OT_playblast(bpy.types.Operator):
             bpy.context.space_data.overlay.show_axis_y = False
             bpy.context.space_data.overlay.show_axis_z = False
             bpy.context.space_data.overlay.show_text = False
-            bpy.context.space_data.overlay.show_stats = False
+            if bpy.app.version >= (2, 90, 0):
+                bpy.context.space_data.overlay.show_stats = False
             bpy.context.space_data.overlay.show_cursor = False
             bpy.context.space_data.overlay.show_annotation = False
             bpy.context.space_data.overlay.show_bones = False
@@ -294,7 +296,8 @@ class PL_OT_playblast(bpy.types.Operator):
             bpy.context.space_data.overlay.show_axis_y = file_axis_y_overlay
             bpy.context.space_data.overlay.show_axis_z = file_axis_z_olverlay
             bpy.context.space_data.overlay.show_text = file_text_overlay
-            bpy.context.space_data.overlay.show_stats = file_stats_overlay
+            if bpy.app.version >= (2, 90, 0):
+                bpy.context.space_data.overlay.show_stats = file_stats_overlay
             bpy.context.space_data.overlay.show_cursor = file_cursor_overlay
             bpy.context.space_data.overlay.show_annotation = file_annotation_overlay
             bpy.context.space_data.overlay.show_relationship_lines = file_relationship_lines_overlay
