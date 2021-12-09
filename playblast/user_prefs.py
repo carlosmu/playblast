@@ -172,15 +172,17 @@ class PB_Prefs(bpy.types.AddonPreferences):
         prefs = context.preferences.addons[__package__].preferences
 
         ###### OUTPUT SETTINGS ######
-        box = layout.box()
+        maincol =layout.column(align=True)
+        box = maincol.box()
         box.label(text="Output", icon="FILE_FOLDER")
 
+        col = box.column(align=True)
         # Folder
-        box.prop(self, "pb_output_options", text="Folder")
+        col.prop(self, "pb_output_options", text="Folder")
 
         # If options is system folder, choose path
         if prefs.pb_output_options == 'SYSTEM_FOLDER':
-            box.prop(self, "pb_system_folder")
+            col.prop(self, "pb_system_folder")
 
         # Subfolder
         row = box.row()
@@ -205,56 +207,60 @@ class PB_Prefs(bpy.types.AddonPreferences):
 
 
         ###### VIDEO SETTINGS ######
-        box = layout.box()
-        box.label(text="Video Settings", icon="FILE_MOVIE")
+        box = maincol.box()
+        col = box.column(align=True)
+        col.label(text="Video Settings", icon="FILE_MOVIE")
         # Set format
-        box.prop(self, "pb_format")
+        col.prop(self, "pb_format")
         # If format is FFMPEG, set container and audio
         if prefs.pb_format == 'FFMPEG':
-            box.prop(self, "pb_container")
-            box.prop(self, "pb_video_codec")
+            col.prop(self, "pb_container")
+            col.prop(self, "pb_video_codec")
+            col.prop(self, "pb_audio")
             box.prop(self, "pb_gop")
-            box.prop(self, "pb_audio")
-        box.separator()
 
         # Set resolution
         row = box.row()
         row.prop(self, "pb_resize_method")
         if prefs.pb_resize_method == 'PERCENTAGE':
             row.prop(self, "pb_resize_percentage", text="")
-            box.separator()
         elif prefs.pb_resize_method == 'MAX_HEIGHT':
             row.prop(self, "pb_resize_max_height", text="")
-            box.separator()
         else:
             pass
-
-        row = box.row()
+        
+        col = box.column(align=True)
+        row = col.row()
         # Enable Stamp
         row.prop(self, "pb_stamp")
         if prefs.pb_stamp:
             row.prop(self, "pb_stamp_font_size", text="Font Size")
         # Show Environment
-        box.prop(self, "pb_show_environment")
-        row = box.row()
-        row.prop(self, "pb_overlays")
+        col.prop(self, "pb_show_environment")
+        box.prop(self, "pb_overlays")
         box.separator()
+
+        layout.use_property_split = False
+        
+        row = maincol.row(align=True)
+        ###### UI SETTINGS ######
+        box = row.box()
+        box.label(text="User Interface", icon='MOD_BUILD')
+        col = box.column()
+        # Enable on Main Menu
+        col.prop(self, "pb_enable_3dview_menu", text="Main Menu Popover")
+        # Enable Button on Context
+        col.prop(self, "pb_enable_context_menu", text="Context Menu Popover")
+        col.separator()
 
         ###### BEHAVIOR SETTINGS ######
-        box = layout.box()
+        box = row.box()
         box.label(text="Behavior", icon='AUTO')
+        col = box.column()
         # Enable Autoplay
-        box.prop(self, "pb_autoplay")
-        box.separator()
-
-        ###### UI SETTINGS ######
-        box = layout.box()
-        box.label(text="User Interface", icon='MOD_BUILD')
-        # Enable on Main Menu
-        box.prop(self, "pb_enable_3dview_menu", text="Main Menu Popover")
-        # Enable Button on Context
-        box.prop(self, "pb_enable_context_menu", text="Context Menu Popover")
-        box.separator()
+        col.prop(self, "pb_autoplay")
+        col.label(text="")
+        col.separator()
 
 ####################################
 # REGISTER/UNREGISTER
