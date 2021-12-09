@@ -11,6 +11,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+bl_info = {
+    "name": "Playblast",
+    "author": "carlosmu <carlos.damian.munoz@gmail.com>",
+    "blender": (2, 83, 0),
+    "version": (1, 2, 5),
+    "category": "Animation",
+    "location": "3D View Main Menu and/or Right Click Context Menu",
+    "description": "Improves viewport render animation user experience",
+    "warning": "",
+    "doc_url": "https://blendermarket.com/products/playblast",
+    "tracker_url": "https://blendermarket.com/creators/carlosmu",
+}
+
+import bpy
+import importlib
+
 ####################################
 # IMPORT MODULES
 ####################################
@@ -27,8 +43,7 @@ from . import pt_popover
 from . import user_prefs
 
 # For reaload modules when updating addon
-if "bpy" in locals():
-    import importlib
+if "bpy" in locals():    
     importlib.reload(draw_button)
     importlib.reload(keymap)
     importlib.reload(op_open_filebrowser)
@@ -40,18 +55,6 @@ if "bpy" in locals():
     importlib.reload(pt_popover)
     importlib.reload(user_prefs)
 
-bl_info = {
-    "name": "Playblast",
-    "author": "carlosmu <carlos.damian.munoz@gmail.com>",
-    "blender": (2, 83, 0),
-    "version": (1, 2, 5),
-    "category": "Animation",
-    "location": "3D View Main Menu and/or Right Click Context Menu",
-    "description": "Improves viewport render animation user experience",
-    "warning": "",
-    "doc_url": "https://blendermarket.com/products/playblast",
-    "tracker_url": "https://blendermarket.com/creators/carlosmu",
-}
 
 ####################################
 # REGISTER/UNREGISTER
