@@ -13,7 +13,7 @@ class PL_OT_open_preferences(bpy.types.Operator):
             return True
 
     def execute(self, context):
-        bpy.ops.screen.userpref_show()
+        bpy.ops.screen.userpref_show('INVOKE_DEFAULT')
         bpy.context.preferences.active_section = 'ADDONS'
         bpy.data.window_managers["WinMan"].addon_search = "Playblast"
 
