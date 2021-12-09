@@ -84,8 +84,8 @@ class PL_PT_popover(bpy.types.Panel):
         layout.operator("playblast.turnaround_camera", icon='CON_CAMERASOLVER', text="Add Turnaround Camera")
 
         
-
-def popover(self, context):
+# Main Menu popover
+def popover_mainmenu(self, context):
     prefs = context.preferences.addons[__package__].preferences
     if prefs.pb_enable_3dview_menu:
         if bpy.context.area.show_menus:
@@ -93,13 +93,20 @@ def popover(self, context):
         else:
             self.layout.popover("playblast.popover", icon='FILE_MOVIE')
 
+# Context menu popover
+def popover_contextmenu(self, context):
+    prefs = context.preferences.addons[__package__].preferences
+    if prefs.pb_enable_context_menu:
+        self.layout.popover("playblast.popover", icon='FILE_MOVIE')
+
 
 ####################################
 # REGISTER/UNREGISTER
 ####################################
 def register():
     bpy.utils.register_class(PL_PT_popover)
-    bpy.types.VIEW3D_MT_editor_menus.append(popover)
+    bpy.types.VIEW3D_MT_editor_menus.append(popover_mainmenu)
+    bpy.types.VIEW3D_MT_object_context_menu.prepend(popover_contextmenu)
 
     bpy.types.Scene.enable_overrides = bpy.props.BoolProperty(
         name="Quick Settings",
@@ -173,7 +180,8 @@ def register():
 
 def unregister():
     bpy.utils.unregister_class(PL_PT_popover)
-    bpy.types.VIEW3D_MT_editor_menus.remove(popover)
+    bpy.types.VIEW3D_MT_editor_menus.remove(popover_mainmenu)
+    bpy.types.VIEW3D_MT_object_context_menu.remove(popover_contextmenu)
 
     del bpy.types.Scene.enable_overrides
     del bpy.types.Scene.enable_resolution
