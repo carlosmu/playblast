@@ -16,21 +16,35 @@
 ####################################
 
 from . import draw_button
+from . import keymap
+from . import op_open_filebrowser
+from . import op_open_preferences
 from . import op_playblast
 from . import op_player
 from . import op_turnaround_camera
-from . import op_open_filebrowser
-from . import op_open_preferences
 from . import op_version_numbering
-from . import popover
+from . import pt_popover
 from . import user_prefs
-from . import keymap
+
+# For reaload modules when updating addon
+if "bpy" in locals():
+    import importlib
+    importlib.reload(draw_button)
+    importlib.reload(keymap)
+    importlib.reload(op_open_filebrowser)
+    importlib.reload(op_open_preferences)
+    importlib.reload(op_playblast)
+    importlib.reload(op_player)
+    importlib.reload(op_turnaround_camera)
+    importlib.reload(op_version_numbering)
+    importlib.reload(pt_popover)
+    importlib.reload(user_prefs)
 
 bl_info = {
     "name": "Playblast",
     "author": "carlosmu <carlos.damian.munoz@gmail.com>",
     "blender": (2, 83, 0),
-    "version": (1, 2, 4),
+    "version": (1, 2, 5),
     "category": "Animation",
     "location": "3D View Main Menu and/or Right Click Context Menu",
     "description": "Improves viewport render animation user experience",
@@ -46,25 +60,25 @@ bl_info = {
 
 def register():
     draw_button.register()
+    keymap.register()
+    op_open_filebrowser.register()
+    op_open_preferences.register()
     op_playblast.register()
     op_player.register()
     op_turnaround_camera.register()
-    op_open_filebrowser.register()
-    op_open_preferences.register()
     op_version_numbering.register()
-    popover.register()
+    pt_popover.register()
     user_prefs.register()
-    keymap.register()
 
 
 def unregister():
     draw_button.unregister()
+    keymap.unregister()
+    op_open_filebrowser.unregister()
+    op_open_preferences.unregister()
     op_playblast.unregister()
     op_player.unregister()
     op_turnaround_camera.unregister()
-    op_open_filebrowser.unregister()
-    op_open_preferences.unregister()
     op_version_numbering.unregister()
-    popover.unregister()
+    pt_popover.unregister()
     user_prefs.unregister()
-    keymap.unregister()
