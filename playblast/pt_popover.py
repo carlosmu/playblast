@@ -97,7 +97,9 @@ def popover_mainmenu(self, context):
 def popover_contextmenu(self, context):
     prefs = context.preferences.addons[__package__].preferences
     if prefs.pb_enable_context_menu:
-        self.layout.popover("playblast.popover", icon='FILE_MOVIE')
+        layout = self.layout
+        layout.popover("playblast.popover", icon='FILE_MOVIE')
+        layout.separator()
 
 
 ####################################

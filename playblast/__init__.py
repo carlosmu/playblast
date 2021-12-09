@@ -15,7 +15,7 @@ bl_info = {
     "name": "Playblast",
     "author": "carlosmu <carlos.damian.munoz@gmail.com>",
     "blender": (2, 83, 0),
-    "version": (1, 2, 5),
+    "version": (1, 2, 6),
     "category": "Animation",
     "location": "3D View Main Menu and/or Right Click Context Menu",
     "description": "Improves viewport render animation user experience",
@@ -31,7 +31,6 @@ import importlib
 # IMPORT MODULES
 ####################################
 
-from . import draw_button
 from . import keymap
 from . import op_open_filebrowser
 from . import op_open_preferences
@@ -44,7 +43,6 @@ from . import user_prefs
 
 # For reaload modules when updating addon
 if "bpy" in locals():    
-    importlib.reload(draw_button)
     importlib.reload(keymap)
     importlib.reload(op_open_filebrowser)
     importlib.reload(op_open_preferences)
@@ -62,7 +60,6 @@ if "bpy" in locals():
 
 
 def register():
-    draw_button.register()
     keymap.register()
     op_open_filebrowser.register()
     op_open_preferences.register()
@@ -75,7 +72,6 @@ def register():
 
 
 def unregister():
-    draw_button.unregister()
     keymap.unregister()
     op_open_filebrowser.unregister()
     op_open_preferences.unregister()

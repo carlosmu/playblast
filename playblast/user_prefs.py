@@ -151,23 +151,8 @@ class PB_Prefs(bpy.types.AddonPreferences):
     )
     # Context Menu options
     pb_enable_context_menu: bpy.props.BoolProperty(
-        name="Context Menu",
-        description="Enable UI Buttons on Right Click (or W) Object Context Menu",
-        default=False,
-    )
-    pb_enable_context_menu_playblast: bpy.props.BoolProperty(
-        name="Playblast on Context Menu",
-        description="Enable Playblast Button on Right Click (or W) Object Context Menu",
-        default=True,
-    )
-    pb_enable_context_menu_replay: bpy.props.BoolProperty(
-        name="Replay on Context Menu",
-        description="Enable Replay Button on Right Click (or W) Object Context Menu",
-        default=False,
-    )
-    pb_enable_context_menu_filebrowser: bpy.props.BoolProperty(
-        name="Filebrowser button on Context Menu",
-        description="Enable Filebrowser Button on Right Click (or W) Object Context Menu",
+        name="Context Menu Popover",
+        description="Enable Popover on Right Click (or W) Object Context Menu",
         default=False,
     )
     # Main Menu Popover
@@ -268,15 +253,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
         # Enable on Main Menu
         box.prop(self, "pb_enable_3dview_menu", text="Main Menu Popover")
         # Enable Button on Context
-        row = box.row()
-        row.prop(self, "pb_enable_context_menu", text="Context Menu Buttons")
-        if prefs.pb_enable_context_menu:  
-            col = row.column(align=True)
-            col.scale_x = .9
-            col.use_property_split = False
-            col.prop(self, "pb_enable_context_menu_playblast", text="Playblast", icon="FILE_MOVIE")
-            col.prop(self, "pb_enable_context_menu_replay", text="Replay", icon="PLAY")
-            col.prop(self, "pb_enable_context_menu_filebrowser", text="File browser", icon="FILEBROWSER")
+        box.prop(self, "pb_enable_context_menu", text="Context Menu Popover")
         box.separator()
 
 ####################################
