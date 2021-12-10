@@ -5,7 +5,7 @@ import bpy
 class PL_OT_turnaround_camera(bpy.types.Operator):
     """Create Turnaround Camera (overwrites pre-existing ones)"""
     bl_idname = "playblast.turnaround_camera"
-    bl_label = "Turnaround Camera"
+    bl_label = "Add Turnaround Camera"
     bl_options = {'REGISTER', 'UNDO'}
 
     # Creation Settings
