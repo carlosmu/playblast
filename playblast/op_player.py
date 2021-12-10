@@ -26,7 +26,7 @@ class PL_OT_player(bpy.types.Operator):
     # Prevents operator appearing in unsupported editors
     @classmethod
     def poll(cls, context):
-        if context.area.ui_type == 'VIEW_3D':
+        if (context.area != None) and (context.area.ui_type == 'VIEW_3D'):
             return True
 
     ##############################################
