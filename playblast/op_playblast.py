@@ -26,8 +26,9 @@ class PL_OT_playblast(bpy.types.Operator):
     # Prevents operator appearing in unsupported editors
     @classmethod
     def poll(cls, context):
-        if (context.area != None) and (context.area.ui_type == 'VIEW_3D'):
-            return True
+        if context.area != None:
+            if context.area.ui_type == 'VIEW_3D':
+                return True
 
     ##############################################
     #   Playblast functionality
