@@ -167,14 +167,17 @@ class PB_Prefs(bpy.types.AddonPreferences):
     ##############################################
 
     def draw(self, context):
+
         layout = self.layout
         layout.use_property_split = True
+
         prefs = context.preferences.addons[__package__].preferences
 
-        ###### OUTPUT SETTINGS ######
-        maincol =layout.column(align=True)
-        box = maincol.box()
-        box.label(text="Output", icon="FILE_FOLDER")
+        ###### OUTPUT SETTINGS #################################################
+        maincol = layout.column(align=True)
+
+        box = maincol.box() # MAIN COLUMN
+        box.label(text="OUTPUT", icon="FILE_FOLDER")
 
         col = box.column(align=True)
         # Folder
@@ -193,24 +196,27 @@ class PB_Prefs(bpy.types.AddonPreferences):
         box.separator()
 
         # Set prefix
-        row = box.row()
-        row.prop(self, "pb_prefix_options", text="Name Prefix")
+        col = box.column(align=True)
+
+        row = col.row()
+        row.prop(self, "pb_prefix_options")
         if prefs.pb_prefix_options == 'CUSTOM_PREFIX':
             row.prop(self, "pb_custom_prefix", text="")
 
         if prefs.pb_prefix_options != 'NONE':
-            row = box.row()
-            row.prop(self, "pb_separator", text="Separator")
+            col.separator()
+            row = col.row()
+            row.prop(self, "pb_separator", text="Separator Symbol")
             row.label(text="")
-        box.prop(self, "pb_framerange", text="Use framerange as suffix")
+        box.prop(self, "pb_framerange", text="Stamp framerange in filename")
         box.separator()
 
 
-        ###### VIDEO SETTINGS ######
-        box = maincol.box()
-        col = box.column(align=True)
-        col.label(text="Video Settings", icon="FILE_MOVIE")
+        ###### VIDEO SETTINGS #################################################
+        box = maincol.box() # MAIN COLUMN
+        box.label(text="VIDEO SETTINGS", icon="FILE_MOVIE")
         # Set format
+        col = box.column(align=True)
         col.prop(self, "pb_format")
         # If format is FFMPEG, set container and audio
         if prefs.pb_format == 'FFMPEG':
@@ -240,12 +246,12 @@ class PB_Prefs(bpy.types.AddonPreferences):
         box.prop(self, "pb_overlays")
         box.separator()
 
-        layout.use_property_split = False
         
         row = maincol.row(align=True)
-        ###### UI SETTINGS ######
+        row.use_property_split = False
+        ###### UI SETTINGS #################################################
         box = row.box()
-        box.label(text="User Interface", icon='MOD_BUILD')
+        box.label(text="USER INTERFACE", icon='MOD_BUILD')
         col = box.column()
         # Enable on Main Menu
         col.prop(self, "pb_enable_3dview_menu", text="Main Menu Popover")
@@ -253,9 +259,9 @@ class PB_Prefs(bpy.types.AddonPreferences):
         col.prop(self, "pb_enable_context_menu", text="Context Menu Popover")
         col.separator()
 
-        ###### BEHAVIOR SETTINGS ######
+        ###### BEHAVIOR SETTINGS #################################################
         box = row.box()
-        box.label(text="Behavior", icon='AUTO')
+        box.label(text="BEHAVIOR", icon='AUTO')
         col = box.column()
         # Enable Autoplay
         col.prop(self, "pb_autoplay")
