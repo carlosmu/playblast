@@ -105,7 +105,16 @@ class PL_OT_playblast(bpy.types.Operator):
         file_name = bpy.path.basename(bpy.data.filepath)
         file_name = os.path.splitext(file_name)[0]
 
-
+        # Define Separator
+        if prefs.pb_separator == 'UNDERSCORE':
+            separator = "_"
+        elif prefs.pb_separator == 'DASH':
+            separator = "-"
+        elif prefs.pb_separator == 'DOT':
+            separator = "."
+        else:
+            separator = " "
+        
         # Define Prefix
         prefix = ""
         if prefs.pb_prefix_options == 'FILE_NAME':
@@ -116,7 +125,7 @@ class PL_OT_playblast(bpy.types.Operator):
             pass
 
         # Framerange
-        framerange = f'{prefs.pb_separator}{context.scene.frame_start:0>4}{prefs.pb_separator}{context.scene.frame_end:0>4}'
+        framerange = f'{separator}{context.scene.frame_start:0>4}{separator}{context.scene.frame_end:0>4}'
 
         if prefs.pb_framerange:
             name = prefix + framerange
@@ -125,7 +134,7 @@ class PL_OT_playblast(bpy.types.Operator):
 
         # Custom Version
         version_number = str(context.scene.version_number)
-        version = f'{prefs.pb_separator}v{version_number:0>3}'
+        version = f'{separator}v{version_number:0>3}'
         
         # Apply version
         if context.scene.enable_version and context.scene.enable_overrides:

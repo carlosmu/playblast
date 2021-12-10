@@ -36,7 +36,7 @@ class PB_Prefs(bpy.types.AddonPreferences):
         name="Prefix Options",
         description="Set a prefix for video name",
         items=[
-            ('FILE_NAME', 'File name', ''),
+            ('FILE_NAME', 'Filename', ''),
             ('CUSTOM_PREFIX', 'Custom prefix', ''),
             ('NONE', 'No prefix needed', '')],
         default="FILE_NAME",
@@ -46,10 +46,15 @@ class PB_Prefs(bpy.types.AddonPreferences):
         description="Set a custom prefix for video file",
         default="Playblast",
     )
-    pb_separator: bpy.props.StringProperty(
-        name="Prefix Separator",
-        description="Set a custom prefix separator (use only system supported characters, for example underscore, middle dash, or dot)",
-        default="-",
+    pb_separator: bpy.props.EnumProperty(
+        name="Separator",
+        description="Set a custom separator (between name, version, framerange, etc.)",
+        items=[
+            ('UNDERSCORE', '_ (Underscore)', ''),
+            ('DASH', '- (Dash)', ''),
+            ('DOT', '. (Dot)', ''),
+            ('SPACE', ' (Space)', '')],
+        default='DASH',
     )
     pb_framerange: bpy.props.BoolProperty(
         name="Framerange",
@@ -206,8 +211,8 @@ class PB_Prefs(bpy.types.AddonPreferences):
         if prefs.pb_prefix_options != 'NONE':
             col.separator()
             row = col.row()
-            row.prop(self, "pb_separator", text="Separator Symbol")
-            row.label(text="")
+            row.prop(self, "pb_separator", text="Separator")
+            # row.label(text="")
         box.prop(self, "pb_framerange", text="Stamp framerange in filename")
         box.separator()
 
