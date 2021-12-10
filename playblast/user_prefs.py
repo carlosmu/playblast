@@ -1,4 +1,5 @@
 import bpy
+import os
 
 ##############################################
 #    USER PREFERENCES
@@ -32,18 +33,17 @@ class PB_Prefs(bpy.types.AddonPreferences):
         description="Set a subfolder Name",
         default="Playblast",
     )
-    pb_prefix_options: bpy.props.EnumProperty(
-        name="Prefix Options",
-        description="Set a prefix for video name",
+    pb_playblast_name: bpy.props.EnumProperty(
+        name="Playblast Name",
+        description="Set a name for generated video file, based on project or custom name",
         items=[
-            ('FILE_NAME', 'Filename', ''),
-            ('CUSTOM_PREFIX', 'Custom prefix', ''),
-            ('NONE', 'No prefix needed', '')],
-        default="FILE_NAME",
+            ('FILENAME', 'Same as filename', ''),
+            ('CUSTOM_NAME', 'Custom name', '')],
+        default="FILENAME",
     )
-    pb_custom_prefix: bpy.props.StringProperty(
-        name="Custom prefix",
-        description="Set a custom prefix for video file",
+    pb_custom_name: bpy.props.StringProperty(
+        name="Custom Name",
+        description="Set a custom name for video file",
         default="Playblast",
     )
     pb_separator: bpy.props.EnumProperty(
@@ -200,19 +200,15 @@ class PB_Prefs(bpy.types.AddonPreferences):
             row.prop(self, "pb_subfolder_name", text="")
         box.separator()
 
-        # Set prefix
+        # Set playblast name
         col = box.column(align=True)
 
         row = col.row()
-        row.prop(self, "pb_prefix_options")
-        if prefs.pb_prefix_options == 'CUSTOM_PREFIX':
-            row.prop(self, "pb_custom_prefix", text="")
+        row.prop(self, "pb_playblast_name")
+        if prefs.pb_playblast_name == 'CUSTOM_NAME':
+            row.prop(self, "pb_custom_name", text="")
 
-        if prefs.pb_prefix_options != 'NONE':
-            col.separator()
-            row = col.row()
-            row.prop(self, "pb_separator", text="Separator")
-            # row.label(text="")
+        box.prop(self, "pb_separator", text="Separator")
         box.prop(self, "pb_framerange", text="Stamp framerange in filename")
         box.separator()
 

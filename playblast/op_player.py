@@ -26,7 +26,7 @@ class PL_OT_player(bpy.types.Operator):
     # Prevents operator appearing in unsupported editors
     @classmethod
     def poll(cls, context):
-        if (context.area.ui_type == 'VIEW_3D'):
+        if context.area.ui_type == 'VIEW_3D':
             return True
 
     ##############################################
@@ -115,12 +115,12 @@ class PL_OT_player(bpy.types.Operator):
         else:
             separator = " "
 
-        # Define Prefix
-        prefix = ""
-        if prefs.pb_prefix_options == 'FILE_NAME':
-            prefix = file_name
-        elif prefs.pb_prefix_options == 'CUSTOM_PREFIX':
-            prefix = prefs.pb_custom_prefix
+        # Define Playblast_name
+        playblast_name = ""
+        if prefs.pb_playblast_name == 'FILENAME':
+            playblast_name = file_name
+        elif prefs.pb_playblast_name == 'CUSTOM_NAME':
+            playblast_name = prefs.pb_custom_name
         else:
             pass
 
@@ -128,9 +128,9 @@ class PL_OT_player(bpy.types.Operator):
         framerange = f'{separator}{context.scene.frame_start:0>4}{separator}{context.scene.frame_end:0>4}'
 
         if prefs.pb_framerange:
-            name = prefix + framerange
+            name = playblast_name + framerange
         else:
-            name = prefix
+            name = playblast_name
 
         # Custom Version
         version_number = str(context.scene.version_number)

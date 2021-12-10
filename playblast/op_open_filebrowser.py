@@ -37,12 +37,12 @@ class PL_OT_open_filebrowser(bpy.types.Operator):
             file_name = bpy.path.basename(bpy.data.filepath)
             file_name = os.path.splitext(file_name)[0]
 
-            # Define Prefix
-            prefix = ""
-            if prefs.pb_prefix_options == 'FILE_NAME':
-                prefix = file_name
-            elif prefs.pb_prefix_options == 'CUSTOM_PREFIX':
-                prefix = prefs.pb_custom_prefix
+            # Define Playblast_name
+            playblast_name = ""
+            if prefs.pb_playblast_name == 'FILENAME':
+                playblast_name = file_name
+            elif prefs.pb_playblast_name == 'CUSTOM_NAME':
+                playblast_name = prefs.pb_custom_name
             else:
                 pass
 
@@ -70,9 +70,9 @@ class PL_OT_open_filebrowser(bpy.types.Operator):
                     else:
                         output = file_output
 
-            # Add prefix to output
+            # Add playblast_name to output
             output_dir = output
-            output = output + prefix
+            output = output + playblast_name
 
             # Absolute path
             sane_path = lambda p: os.path.abspath(bpy.path.abspath(p))
