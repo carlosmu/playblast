@@ -18,7 +18,7 @@ def videoplayer_error(self, context):
     self.layout.label(text="Check your aplication videoplayer preferences")
 
 class PL_OT_playblast(bpy.types.Operator):
-    """Quick viewport render of the animation framerange using the addon-preferences"""
+    """Quick viewport render of the animation framerange using the addon settings"""
     bl_idname = "playblast.playblast"
     bl_label = "Playblast"
     bl_options = {'REGISTER', 'UNDO'}

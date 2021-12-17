@@ -18,7 +18,7 @@ bl_info = {
     "version": (1, 3, 0),
     "category": "Animation",
     "location": "3D View Main Menu and/or Right Click Context Menu",
-    "description": "Improves viewport render animation user experience",
+    "description": "Improves user experience in viewport render animations.",
     "warning": "",
     "doc_url": "https://blendermarket.com/products/playblast",
     "tracker_url": "https://blendermarket.com/creators/carlosmu",
