@@ -1,0 +1,16 @@
+# Dont change this, is not referred to addon version
+schema_version = "1.0.0"
+# Dont change this, is not referred to addon version
+
+
+id = "playblast"
+version = "1.3.1"
+name = "Playblast"
+tagline = "Keep render options and playblast options separately"
+maintainer = "carlosmu | carlos.damian.munoz@gmail.com"
+type = "add-on"
+tags = ["Animation", "3D View", "User Interface", "Render"]
+website = "https://blendermarket.com/products/playblast"
+
+blender_version_min = "3.6.0"
+license = ["SPDX:GPL-3.0-or-later",]
