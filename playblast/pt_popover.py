@@ -97,6 +97,8 @@ def popover_mainmenu(self, context):
         if bpy.context.area.show_menus:
             self.layout.popover("PLAYBLAST_PT_popover",
                                 text="", icon='FILE_MOVIE')
+            # progress bar for future updates
+            # self.layout.progress(text='', text_ctxt='', translate=True, factor=0.5, type='RING')
         else:
             self.layout.popover("PLAYBLAST_PT_popover", icon='FILE_MOVIE')
 
