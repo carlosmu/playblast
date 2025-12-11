@@ -69,6 +69,10 @@ class PL_OT_playblast(bpy.types.Operator):
         file_color_mode = bpy.data.scenes[file_scene].render.image_settings.color_mode
         # Color Depth
         file_color_depth = bpy.data.scenes[file_scene].render.image_settings.color_depth
+        # Media Type (Blender 5.0+)
+        file_media_type = None
+        if bpy.app.version >= (5, 0, 0):
+            file_media_type = bpy.data.scenes[file_scene].render.image_settings.media_type
         # X Resolution
         file_resolution_x = bpy.data.scenes[file_scene].render.resolution_x
         # Y Resolution
@@ -212,14 +216,17 @@ class PL_OT_playblast(bpy.types.Operator):
         bpy.data.scenes[file_scene].render.filepath = output
 
         if bpy.app.version >= (5, 0, 0):
+            # Blender 5.0+ - Set media type to VIDEO first
+            bpy.context.scene.render.image_settings.media_type = 'VIDEO'
+            # Blender 5.0+ - Always set format and codec
+            bpy.context.scene.render.ffmpeg.format = 'MPEG4'
+            bpy.context.scene.render.ffmpeg.codec = 'H265'
             # Blender 5.0+ uses PNG for video rendering through compositor
-            bpy.data.scenes[file_scene].render.image_settings.file_format = 'PNG'
+            # bpy.data.scenes[file_scene].render.image_settings.file_format = 'PNG'
             # Video rendering settings for Blender 5.0+
-            if hasattr(bpy.data.scenes[file_scene].render, 'use_multiview'):
-                bpy.data.scenes[file_scene].render.ffmpeg.format = prefs.pb_container
-                bpy.data.scenes[file_scene].render.ffmpeg.codec = prefs.pb_video_codec
-                bpy.data.scenes[file_scene].render.ffmpeg.gopsize = prefs.pb_gop
-                bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = prefs.pb_audio
+            # if hasattr(bpy.data.scenes[file_scene].render, 'use_multiview'):
+            #     bpy.data.scenes[file_scene].render.ffmpeg.gopsize = prefs.pb_gop
+            #     bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = prefs.pb_audio
         else:
             # Pre-Blender 5.0
             bpy.data.scenes[file_scene].render.image_settings.file_format = prefs.pb_format
@@ -297,6 +304,9 @@ class PL_OT_playblast(bpy.types.Operator):
             bpy.context.scene.render.use_file_extension = file_extension
             bpy.data.scenes[file_scene].render.filepath = file_output
             bpy.data.scenes[file_scene].render.image_settings.file_format = file_format
+            # Restore media type (Blender 5.0+)
+            if bpy.app.version >= (5, 0, 0):
+                bpy.data.scenes[file_scene].render.image_settings.media_type = file_media_type
             if file_format == 'FFMPEG':
                 bpy.data.scenes[file_scene].render.ffmpeg.format = file_container
                 bpy.data.scenes[file_scene].render.ffmpeg.codec = file_video_codec
