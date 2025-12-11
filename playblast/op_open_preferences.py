@@ -14,8 +14,7 @@ class PL_OT_open_preferences(bpy.types.Operator):
 
     def execute(self, context):
         if bpy.app.version > (5, 0, 0):
-            pass
-            # bpy.ops.wm.addon_userpref_show(module="playblast")
+            bpy.ops.wm.addon_userpref_show(module="playblast")
         else:
             bpy.ops.screen.userpref_show('INVOKE_DEFAULT')
             bpy.context.preferences.active_section = 'ADDONS'
