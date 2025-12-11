@@ -211,13 +211,23 @@ class PL_OT_playblast(bpy.types.Operator):
         #################################
         bpy.data.scenes[file_scene].render.filepath = output
 
-        bpy.data.scenes[file_scene].render.image_settings.file_format = prefs.pb_format
-
-        if prefs.pb_format == 'FFMPEG':
-            bpy.data.scenes[file_scene].render.ffmpeg.format = prefs.pb_container
-            bpy.data.scenes[file_scene].render.ffmpeg.codec = prefs.pb_video_codec
-            bpy.data.scenes[file_scene].render.ffmpeg.gopsize = prefs.pb_gop
-            bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = prefs.pb_audio
+        if bpy.app.version >= (5, 0, 0):
+            # Blender 5.0+ uses PNG for video rendering through compositor
+            bpy.data.scenes[file_scene].render.image_settings.file_format = 'PNG'
+            # Video rendering settings for Blender 5.0+
+            if hasattr(bpy.data.scenes[file_scene].render, 'use_multiview'):
+                bpy.data.scenes[file_scene].render.ffmpeg.format = prefs.pb_container
+                bpy.data.scenes[file_scene].render.ffmpeg.codec = prefs.pb_video_codec
+                bpy.data.scenes[file_scene].render.ffmpeg.gopsize = prefs.pb_gop
+                bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = prefs.pb_audio
+        else:
+            # Pre-Blender 5.0
+            bpy.data.scenes[file_scene].render.image_settings.file_format = prefs.pb_format
+            if prefs.pb_format == 'FFMPEG':
+                bpy.data.scenes[file_scene].render.ffmpeg.format = prefs.pb_container
+                bpy.data.scenes[file_scene].render.ffmpeg.codec = prefs.pb_video_codec
+                bpy.data.scenes[file_scene].render.ffmpeg.gopsize = prefs.pb_gop
+                bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = prefs.pb_audio
 
         # if prefs.pb_resize_method == 'PERCENTAGE' or prefs.pb_resize_method == 'MAX_HEIGHT':
         bpy.data.scenes[file_scene].render.resolution_x = resolution_x
@@ -267,7 +277,10 @@ class PL_OT_playblast(bpy.types.Operator):
 
         # Try to create the video, but mainly protect the user's data
         try:
-            bpy.ops.render.opengl(animation=True)
+            if bpy.app.version >= (5, 0, 0):
+                bpy.ops.render.render(animation=True)
+            else:
+                bpy.ops.render.opengl(animation=True)
             if prefs.pb_autoplay:
                 try:
                     bpy.ops.render.play_rendered_anim()

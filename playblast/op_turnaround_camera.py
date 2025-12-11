@@ -1,5 +1,6 @@
 
 import bpy
+from bpy_extras import anim_utils
 
 
 class PL_OT_turnaround_camera(bpy.types.Operator):
@@ -112,15 +113,41 @@ class PL_OT_turnaround_camera(bpy.types.Operator):
         else:
             action = bpy.data.actions["Turnaround_Action"]
 
-        # Remove fcurves
-        if action.fcurves:
-            fc = action.fcurves
-            fc.remove(fc[0])
-
         # Set active action
         if empty.animation_data is None:
             empty.animation_data_create()
         empty.animation_data.action = action
+
+        # Remove existing fcurves
+        if bpy.app.version >= (5, 0, 0):
+            # Blender 5.0+ compatibility - use channelbag API
+            action = empty.animation_data.action
+            if action and hasattr(empty.animation_data, 'action_slots'):
+                # Find the action slot that contains this action
+                action_slot = None
+                if empty.animation_data.action_slots:
+                    # Try to find the slot with this action
+                    for slot in empty.animation_data.action_slots:
+                        if slot.action == action:
+                            action_slot = slot
+                            break
+                    # If not found, use active slot or first slot
+                    if not action_slot:
+                        action_slot = empty.animation_data.action_slots.active
+                        if not action_slot and len(empty.animation_data.action_slots) > 0:
+                            action_slot = empty.animation_data.action_slots[0]
+                
+                if action_slot:
+                    # Get or ensure channelbag exists
+                    channelbag = anim_utils.action_ensure_channelbag_for_slot(action, action_slot)
+                    # Remove all existing fcurves
+                    for fcurve in list(channelbag.fcurves):
+                        channelbag.fcurves.remove(fcurve)
+        else:
+            # Pre-Blender 5.0
+            if action.fcurves:
+                fc = action.fcurves
+                fc.remove(fc[0])
 
         # Insert start keyframe (0,0,0)
         empty.rotation_euler[2] = 0
@@ -133,8 +160,33 @@ class PL_OT_turnaround_camera(bpy.types.Operator):
                               index=2, frame=self.end_frame)
 
         # Select action and set interpolation type
-        action = empty.animation_data.action
-        action.fcurves[0].keyframe_points[0].interpolation = self.interpolation_type
+        if bpy.app.version >= (5, 0, 0):
+            # Blender 5.0+ compatibility - use channelbag API
+            action = empty.animation_data.action
+            if action and hasattr(empty.animation_data, 'action_slots'):
+                # Find the action slot that contains this action
+                action_slot = None
+                if empty.animation_data.action_slots:
+                    # Try to find the slot with this action
+                    for slot in empty.animation_data.action_slots:
+                        if slot.action == action:
+                            action_slot = slot
+                            break
+                    # If not found, use active slot or first slot
+                    if not action_slot:
+                        action_slot = empty.animation_data.action_slots.active
+                        if not action_slot and len(empty.animation_data.action_slots) > 0:
+                            action_slot = empty.animation_data.action_slots[0]
+                
+                if action_slot:
+                    # Get channelbag for the slot
+                    channelbag = anim_utils.action_get_channelbag_for_slot(action, action_slot)
+                    if channelbag and len(channelbag.fcurves) > 0:
+                        channelbag.fcurves[0].keyframe_points[0].interpolation = self.interpolation_type
+        else:
+            # Pre-Blender 5.0
+            action = empty.animation_data.action
+            action.fcurves[0].keyframe_points[0].interpolation = self.interpolation_type
 
         return{'FINISHED'}
 
