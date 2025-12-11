@@ -55,16 +55,31 @@ class PL_OT_player(bpy.types.Operator):
         file_scene = bpy.context.scene.name_full  # Scene Name
         # Output path
         file_output = bpy.data.scenes[file_scene].render.filepath
-        # Output file format
-        file_format = bpy.data.scenes[file_scene].render.image_settings.file_format
-        if file_format == 'FFMPEG':  # Only save container and audio in FFMPEG format
-            # Video Container
-            file_container = bpy.data.scenes[file_scene].render.ffmpeg.format
-            # Video Codec
-            file_video_codec = bpy.data.scenes[file_scene].render.ffmpeg.codec
-            file_gop = bpy.data.scenes[file_scene].render.ffmpeg.gopsize  # GOP
-            # Audio codec
-            file_audio = bpy.data.scenes[file_scene].render.ffmpeg.audio_codec
+        # Output file format and FFMPEG settings (Pre-Blender 5.0)
+        file_format = None
+        file_container = None
+        file_video_codec = None
+        file_gop = None
+        file_audio = None
+        if bpy.app.version < (5, 0, 0):
+            file_format = bpy.data.scenes[file_scene].render.image_settings.file_format
+            if file_format == 'FFMPEG':  # Only save container and audio in FFMPEG format
+                # Video Container
+                file_container = bpy.data.scenes[file_scene].render.ffmpeg.format
+                # Video Codec
+                file_video_codec = bpy.data.scenes[file_scene].render.ffmpeg.codec
+                file_gop = bpy.data.scenes[file_scene].render.ffmpeg.gopsize  # GOP
+                # Audio codec
+                file_audio = bpy.data.scenes[file_scene].render.ffmpeg.audio_codec
+        # FFMPEG settings for Blender 5.0+
+        file_ffmpeg_format = None
+        file_ffmpeg_codec = None
+        # Media Type (Blender 5.0+)
+        file_media_type = None
+        if bpy.app.version >= (5, 0, 0):
+            file_ffmpeg_format = bpy.data.scenes[file_scene].render.ffmpeg.format
+            file_ffmpeg_codec = bpy.data.scenes[file_scene].render.ffmpeg.codec
+            file_media_type = bpy.data.scenes[file_scene].render.image_settings.media_type
         # Color Mode
         file_color_mode = bpy.data.scenes[file_scene].render.image_settings.color_mode
         # Color Depth
@@ -303,12 +318,20 @@ class PL_OT_player(bpy.types.Operator):
             #################################
             bpy.context.scene.render.use_file_extension = file_extension
             bpy.data.scenes[file_scene].render.filepath = file_output
-            bpy.data.scenes[file_scene].render.image_settings.file_format = file_format
-            if file_format == 'FFMPEG':
-                bpy.data.scenes[file_scene].render.ffmpeg.format = file_container
-                bpy.data.scenes[file_scene].render.ffmpeg.codec = file_video_codec
-                bpy.data.scenes[file_scene].render.ffmpeg.gopsize = file_gop
-                bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = file_audio
+            # Restore settings based on Blender version
+            if bpy.app.version >= (5, 0, 0):
+                # Blender 5.0+ - Restore media type and FFMPEG settings
+                bpy.data.scenes[file_scene].render.image_settings.media_type = file_media_type
+                bpy.data.scenes[file_scene].render.ffmpeg.format = file_ffmpeg_format
+                bpy.data.scenes[file_scene].render.ffmpeg.codec = file_ffmpeg_codec
+            else:
+                # Pre-Blender 5.0 - Restore file format and FFMPEG settings
+                bpy.data.scenes[file_scene].render.image_settings.file_format = file_format
+                if file_format == 'FFMPEG':
+                    bpy.data.scenes[file_scene].render.ffmpeg.format = file_container
+                    bpy.data.scenes[file_scene].render.ffmpeg.codec = file_video_codec
+                    bpy.data.scenes[file_scene].render.ffmpeg.gopsize = file_gop
+                    bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = file_audio
             bpy.data.scenes[file_scene].render.image_settings.color_mode = file_color_mode
             bpy.data.scenes[file_scene].render.image_settings.color_depth = file_color_depth
             bpy.data.scenes[file_scene].render.resolution_x = file_resolution_x
