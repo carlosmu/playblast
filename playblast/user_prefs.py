@@ -4,6 +4,19 @@ import os
 ##############################################
 #    USER PREFERENCES
 ##############################################
+
+def get_codec_items():
+    items = [
+        ('H264', 'H264', ''),
+        ('QTRLE', 'QT rle / QT Animation', ''),
+    ]
+
+    # Agregar opción solo para Blender 5.0+
+    if bpy.app.version >= (5, 0, 0):
+        items.insert(1, ('H265', 'H265', ''))
+
+    return items
+
 class PB_Prefs(bpy.types.AddonPreferences):
     bl_idname = __package__
 
@@ -80,12 +93,11 @@ class PB_Prefs(bpy.types.AddonPreferences):
             ('MKV', 'Matroska', '')],
         default="MPEG4",
     )
+
     pb_video_codec: bpy.props.EnumProperty(
         name="Video Codec",
         description="Video codec",
-        items=[
-            ('H264', 'H264', ''),
-            ('QTRLE', 'QT rle / QT Animation', '')],
+        items= get_codec_items(),
         default="H264",
     )
     pb_gop: bpy.props.IntProperty(

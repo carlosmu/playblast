@@ -219,8 +219,8 @@ class PL_OT_playblast(bpy.types.Operator):
             # Blender 5.0+ - Set media type to VIDEO first
             bpy.context.scene.render.image_settings.media_type = 'VIDEO'
             # Blender 5.0+ - Always set format and codec
-            bpy.context.scene.render.ffmpeg.format = 'MPEG4'
-            bpy.context.scene.render.ffmpeg.codec = 'H265'
+            bpy.context.scene.render.ffmpeg.format = prefs.pb_container
+            bpy.context.scene.render.ffmpeg.codec = prefs.pb_video_codec
             # Blender 5.0+ uses PNG for video rendering through compositor
             # bpy.data.scenes[file_scene].render.image_settings.file_format = 'PNG'
             # Video rendering settings for Blender 5.0+
