@@ -228,11 +228,11 @@ class PL_OT_playblast(bpy.types.Operator):
         bpy.data.scenes[file_scene].render.filepath = output
 
         if bpy.app.version >= (5, 0, 0):
-            # Blender 5.0+ - Set media type to VIDEO first
-            bpy.context.scene.render.image_settings.media_type = 'VIDEO'
+            # Blender 5.0+ - Set media type to VIDEO first (before user settings)
+            bpy.data.scenes[file_scene].render.image_settings.media_type = 'VIDEO'
             # Blender 5.0+ - Always set format and codec
-            bpy.context.scene.render.ffmpeg.format = prefs.pb_container
-            bpy.context.scene.render.ffmpeg.codec = prefs.pb_video_codec
+            bpy.data.scenes[file_scene].render.ffmpeg.format = prefs.pb_container
+            bpy.data.scenes[file_scene].render.ffmpeg.codec = prefs.pb_video_codec
             # Blender 5.0+ uses PNG for video rendering through compositor
             # bpy.data.scenes[file_scene].render.image_settings.file_format = 'PNG'
             # Video rendering settings for Blender 5.0+
@@ -296,10 +296,29 @@ class PL_OT_playblast(bpy.types.Operator):
 
         # Try to create the video, but mainly protect the user's data
         try:
-            if bpy.app.version >= (5, 0, 0):
-                bpy.ops.render.render(animation=True)
-            else:
-                bpy.ops.render.opengl(animation=True)
+            # Calculate frame range for progress display
+            frame_start = context.scene.frame_start
+            frame_end = context.scene.frame_end
+            total_frames = frame_end - frame_start + 1
+            
+            # Initialize progress bar
+            wm = context.window_manager
+            wm.progress_begin(0, total_frames)
+            self.report({'INFO'}, f"Starting render: {total_frames} frames ({frame_start}-{frame_end})")
+            
+            # Render with progress tracking
+            bpy.ops.render.opengl(animation=True)
+            
+            # Update progress to 100% when done
+            wm.progress_update(total_frames)
+            self.report({'INFO'}, f"Render completed: {total_frames} frames")
+            
+            # End progress bar
+            try:
+                wm.progress_end()
+            except:
+                pass
+            
             if prefs.pb_autoplay:
                 try:
                     bpy.ops.render.play_rendered_anim()
