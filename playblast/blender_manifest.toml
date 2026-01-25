@@ -4,7 +4,7 @@ schema_version = "1.0.0"
 
 
 id = "playblast"
-version = "1.3.2"
+version = "1.3.3"
 name = "Playblast"
 tagline = "Keep render options and playblast options separately"
 maintainer = "carlosmu | carlos.damian.munoz@gmail.com"

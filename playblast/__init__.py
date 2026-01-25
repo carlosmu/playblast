@@ -15,7 +15,7 @@ bl_info = {
     "name": "Playblast",
     "author": "carlosmu <carlos.damian.munoz@gmail.com>",
     "blender": (3, 6, 0),
-    "version": (1, 3, 2),
+    "version": (1, 3, 3),
     "category": "Animation",
     "location": "3D View Main Menu and/or Right Click Context Menu",
     "description": "This addon allows you to keep renders options and playblast options separately",
