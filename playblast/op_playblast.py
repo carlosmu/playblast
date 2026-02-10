@@ -61,6 +61,8 @@ class PL_OT_playblast(bpy.types.Operator):
         file_video_codec = None
         file_gop = None
         file_audio = None
+
+        # FFMPEG settings for Blender 4.x
         if bpy.app.version < (5, 0, 0):
             file_format = bpy.data.scenes[file_scene].render.image_settings.file_format
             if file_format == 'FFMPEG':  # Only save container and audio in FFMPEG format
@@ -69,14 +71,16 @@ class PL_OT_playblast(bpy.types.Operator):
                 # Video Codec
                 file_video_codec = bpy.data.scenes[file_scene].render.ffmpeg.codec
                 file_gop = bpy.data.scenes[file_scene].render.ffmpeg.gopsize  # GOP
-                # Audio codec
-                file_audio = bpy.data.scenes[file_scene].render.ffmpeg.audio_codec
+
         # FFMPEG settings for Blender 5.0+
         file_ffmpeg_format = None
         file_ffmpeg_codec = None
         if bpy.app.version >= (5, 0, 0):
             file_ffmpeg_format = bpy.data.scenes[file_scene].render.ffmpeg.format
             file_ffmpeg_codec = bpy.data.scenes[file_scene].render.ffmpeg.codec
+
+        # Audio codec
+        file_audio = bpy.data.scenes[file_scene].render.ffmpeg.audio_codec
         # Color Mode
         file_color_mode = bpy.data.scenes[file_scene].render.image_settings.color_mode
         # Color Depth
@@ -238,7 +242,7 @@ class PL_OT_playblast(bpy.types.Operator):
             # Video rendering settings for Blender 5.0+
             # if hasattr(bpy.data.scenes[file_scene].render, 'use_multiview'):
             #     bpy.data.scenes[file_scene].render.ffmpeg.gopsize = prefs.pb_gop
-            #     bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = prefs.pb_audio
+            bpy.data.scenes[file_scene].render.ffmpeg.audio_codec = prefs.pb_audio
         else:
             # Pre-Blender 5.0
             bpy.data.scenes[file_scene].render.image_settings.file_format = prefs.pb_format
